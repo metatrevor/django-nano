@@ -2,7 +2,6 @@ from copy import deepcopy
 import datetime
 
 from django.conf.urls.defaults import *
-from django.contrib.auth.models import User
 
 from nano.blog.models import *
 
