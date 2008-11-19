@@ -4,9 +4,10 @@ from datetime import datetime
 
 from django.conf import settings
 from django.contrib.auth.models import SiteProfileNotAvailable
-from django.db import models
+from django.core.exceptions import ImproperlyConfigured
 from django.shortcuts import render_to_response
 from django.template import RequestContext, loader, Context
+from django.db.models import get_model
 
 LOG_FORMAT = getattr(settings, 'NANO_LOG_FORMAT', '%(asctime)s %(name)s %(module)s:%(lineno)d %(levelname)s %(message)s')
 LOG_FILE = getattr(settings, 'NANO_LOG_FILE', '/tmp/nano.log')
@@ -36,23 +37,23 @@ def asciify(string):
 def render_page(request, *args, **kwargs):
     return render_to_response(context_instance=RequestContext(request), *args, **kwargs)
 
-def get_user_model():
-    app_label, model_name = getattr(settings, 'NANO_USER_MODEL', 'auth.User').split('.')
-    return models.get_model(app_label, model_name)
-User = get_user_model()
-
 def get_profile_model():
     if not getattr(settings, 'AUTH_PROFILE_MODULE', False):
         return None
     try:
         app_label, model_name = settings.AUTH_PROFILE_MODULE.split('.')
-        model = models.get_model(app_label, model_name)
+        model = get_model(app_label, model_name)
     except ImportError:
         return None
     except ImproperlyConfigured:
         raise SiteProfileNotAvailable
     return model
 Profile = get_profile_model()
+
+def get_user_model():
+    app_label, model_name = getattr(settings, 'NANO_USER_MODEL', 'auth.User').split('.')
+    return get_model(app_label, model_name)
+User = get_user_model()
 
 if 'nano.blog' in settings.INSTALLED_APPS:
     try:
