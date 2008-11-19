@@ -1,16 +1,18 @@
 from random import choice, sample
 import string
 
+from django.conf import settings
 from django.contrib import auth 
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 
-from nano.tools import *
+#from django.contrib.auth.models import User
+from nano.tools import pop_error, render_page, get_user_model, get_profile_model, add_entry_to_blog
 from nano.user.forms import *
 
+User = get_user_model()
 Profile = get_profile_model()
 
 class NanoUserError(Exception):
@@ -19,11 +21,11 @@ class NanoUserError(Exception):
 class NanoUserExistsError(NanoUserError):
     pass
 
-def pop_error(request):
-    error = request.session.get('error', None)
-    if 'error' in request.session:
-        del request.session['error']
-    return error
+# def pop_error(request):
+#     error = request.session.get('error', None)
+#     if 'error' in request.session:
+#         del request.session['error']
+#     return error
 
 def random_password():
     sample_space = string.letters + string.digits + r'!#$%&()*+,-.:;=?_'
