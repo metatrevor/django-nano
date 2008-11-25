@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block pagetitle %}{{ block.super }} – Private messages: {{ action }}{% endblock pagetitle %}
+{% block content %}
+    <h1>Messages ({{ action }})</h2>
+    <dl>
+    {% for message in pms %}
+    <dt>{{ message.subject }} 
+    {% ifequal action 'archive' %}
+    <a href="../{{ message.id }}/delete/">delete</a>
+    {% else %}
+    {% ifequal action 'sent' %}
+    <a href="../{{ message.id }}/delete/">delete</a>
+    {% else %} 
+    <a href="./{{ message.id }}/archive/">archive</a>
+    <a href="./{{ message.id }}/delete/">delete</a>
+    {% endifequal %}
+    {% endifequal %}
+    </dt>
+    <dd>{{ message.text }}</dd>
+    {% endfor %}
+    </dl>
+{% endblock content %}
+
