@@ -4,20 +4,17 @@
 {% block content %}
     <h1>Messages ({{ action }})</h2>
     <dl>
-    {% for message in pms %}
-    <dt>{{ message.subject }} 
-    {% ifequal action 'archive' %}
-    <a href="../{{ message.id }}/delete/">delete</a>
+    {% for pm in pms %}
+    <dt>{{ pm.subject }} 
+    {% ifequal action 'received' %}
+    <a href="./{{ pm.id }}/archive/">archive</a>
+    <a href="./{{ pm.id }}/delete/">delete</a>
     {% else %}
-    {% ifequal action 'sent' %}
-    <a href="../{{ message.id }}/delete/">delete</a>
-    {% else %} 
-    <a href="./{{ message.id }}/archive/">archive</a>
-    <a href="./{{ message.id }}/delete/">delete</a>
-    {% endifequal %}
+    <a href="{% url delete_pm object_id=pm.recipient.id,msgid=message.id %}">DELETE</a>
+    <a href="../{{ pm.id }}/delete/">delete</a>
     {% endifequal %}
     </dt>
-    <dd>{{ message.text }}</dd>
+    <dd>{{ pm.text }}</dd>
     {% endfor %}
     </dl>
 {% endblock content %}

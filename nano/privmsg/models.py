@@ -9,7 +9,7 @@ from nano.tools import get_user_model
 User = get_user_model()
 
 class PMManager(models.Manager):
-    def sender(self, user):
+    def sent(self, user):
         return self.get_query_set().filter(
                 sender=user, 
                 sender_deleted=False)
@@ -21,7 +21,7 @@ class PMManager(models.Manager):
                 recipient_archived=True
                 )
 
-    def recipient(self, user):
+    def received(self, user):
         return self.get_query_set().filter(
                 recipient=user,
                 recipient_archived=False, 
@@ -31,9 +31,9 @@ class PMManager(models.Manager):
 class PM(AbstractText):
     subject = models.CharField(max_length=64, blank=True, default='')
     sent = models.DateTimeField(default=datetime.now, editable=False)
-    sender = models.ForeignKey(User, related_name='pm_sender')
+    sender = models.ForeignKey(User, related_name='pms_sent')
     sender_deleted = models.BooleanField(default=False)
-    recipient = models.ForeignKey(User, related_name='pm_recipient')
+    recipient = models.ForeignKey(User, related_name='pms_received')
     recipient_archived = models.BooleanField(default=False)
     recipient_deleted = models.BooleanField(default=False)
 
@@ -62,6 +62,11 @@ class PM(AbstractText):
     def delete(self):
         if self.is_deleted():
             super(PM, self).delete()
+
+#     @models.permalink
+#     def get_absolute_url(self):
+#         return ('show_pms', (), {'msgid': self.id, 'uid':}
+#         )
 
     def is_deleted(self):
         if self.sender_deleted and self.recipient_deleted:

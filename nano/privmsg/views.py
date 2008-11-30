@@ -22,46 +22,34 @@ def get_user(request, **kwargs):
     except User.DoesNotExist:
         return None
 
+def _archive(user, recipient, msgids):
+    if recipient != user:
+        raise Http404
+    if not msgids:
+        raise Http404
+    pms = PM.objects.filter(recipient=user, id__in=msgids)
+    pms.update(recipient_archived=True)
+
 @login_required
 def move_to_archive(request, *args, **kwargs):
     recipient = get_user(request, **kwargs)
-    if recipient != request.user:
+    msgid = int(kwargs.get(u'msgid', None))
+    _archive(request.user, recipient, (msgid,))
+    return HttpResponseRedirect('.')
+
+def _delete(user, msgids):
+    if not msgids:
         raise Http404
-    msgid = kwargs.get(u'msgid', None)
-    if not msgid:
-        raise Http404
-    try:
-        pm = PM.objects.get(recipient=request.user, id=int(msgid))
-    except PM.DoesNotExist:
-        raise Http404
-    pm.recipient_archived = True
-    pm.save()
-    return HttpResponseRedirect('./archive/')
+    pms = PM.objects.filter(id__in=msgids)
+    rpms = pms.filter(recipient=user).update(recipient_deleted=True)
+    spms = pms.filter(sender=user).update(sender_deleted=True)
+    pms.delete()
 
 @login_required
 def delete(request, *args, **kwargs):
-    recipient = get_user(request, **kwargs)
-    msgid = kwargs.get(u'msgid', None)
-    if not msgid:
-        assert False, 'msgid'
-        raise Http404
-    try:
-        pm = PM.objects.get(id=int(msgid))
-    except PM.DoesNotExist:
-        assert False, 'pm missing'
-        raise Http404
-    if request.user not in (recipient, pm.sender):
-        assert False, 'not authorized'
-        raise Http404
-    if pm.recipient == request.user:
-        pm.recipient_deleted = True
-    elif pm.sender == request.user:
-        pm.sender_deleted = True
-    else:
-        assert False, 'else'
-    pm.save()
-    pm.delete()
-    return HttpResponseRedirect('/')
+    msgid = int(kwargs.get(u'msgid', None))
+    _delete(request.user, (msgid,))
+    return HttpResponseRedirect('.')
 
 @login_required
 def show_pms(request, *args, **kwargs):
@@ -70,12 +58,20 @@ def show_pms(request, *args, **kwargs):
         raise Http404
     ACTIONS = {
         u'archive': PM.objects.archived,
-        u'sent': PM.objects.sender,
-        u'received': PM.objects.recipient,
+        u'sent': PM.objects.sent,
+        u'received': PM.objects.received,
     }
     actionstr = kwargs.get(u'action', None) or u'received'
     action = ACTIONS[actionstr]
     messages = action(request.user)
+    if request.method == 'POST':
+        msgids = request.POST.getlist(u'msgid')
+        action = request.POST.get(u'submit')
+        #assert False, '%s %s' % (action, msgids)
+        if action == u'delete':
+            _delete(request.user, msgids)
+        elif action == u'archive':
+            _archive(request.user, recipient, msgids)
     template = 'privmsg/archive.html'
     data = {'pms': messages,
             'action': actionstr,
@@ -83,8 +79,7 @@ def show_pms(request, *args, **kwargs):
     return render_page(request, template, data)
 
 @login_required
-def add_pm(request, *args, **kwargs):
-    template = 'privmsg/add.html'
+def add_pm(request, template='privmsg/add.html', *args, **kwargs):
     form = PMForm()
     recipient = get_user(request, **kwargs)
     if request.method == 'POST':
@@ -94,10 +89,11 @@ def add_pm(request, *args, **kwargs):
             pm.sender = request.user
             pm.recipient = recipient
             pm.save()
+            return HttpResponseRedirect('.')
     data = {
             'pms': PM.objects.all(),
             'form': PMForm(),
             'recipient': recipient,
             }
-    return render_page(request, template, data)
 
+    return render_page(request, template, data)
