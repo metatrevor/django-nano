@@ -130,7 +130,7 @@ something you'll be able to remember.
                 return HttpResponseRedirect('/password/reset/sent/')
             else:
                 error = """There's no email-address registered for '%s', 
-                        the password can't be reset."""
+                        the password can't be reset.""" % user.username
                 request.session['error'] = error
                 
     data = {'form': form,
