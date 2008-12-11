@@ -55,7 +55,7 @@ class PM(AbstractText):
             snippet = self.text[:64]
             ls = len(snippet)
             if ls == 64 and ls < len(self.text):
-                snippet[-1] = u'…'
+                snippet = snippet[:-1] + u'…'
             self.subject = snippet
         super(PM, self).save(*args, **kwargs)
 
