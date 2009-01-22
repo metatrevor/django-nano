@@ -1,7 +1,7 @@
 from django.db import models
 
 class Link(models.Model):
-    uri = models.URLField()   
+    uri = models.URLField(unique=True)   
     last_checked = models.DateTimeField(blank=True, null=True)
     status = models.IntegerField(blank=True, null=True)
 
