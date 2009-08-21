@@ -1,5 +1,6 @@
 import logging
 import unicodedata
+from itertools import izip_longest
 from datetime import datetime
 
 from django.conf import settings
@@ -36,6 +37,11 @@ def asciify(string):
 
 def render_page(request, *args, **kwargs):
     return render_to_response(context_instance=RequestContext(request), *args, **kwargs)
+
+def grouper(n, iterable, fillvalue=None):
+    "grouper(3, 'ABCDEFG', 'x') --> ABC DEF Gxx"
+    args = [iter(iterable)] * n
+    return izip_longest(fillvalue=fillvalue, *args)
 
 def get_profile_model():
     if not getattr(settings, 'AUTH_PROFILE_MODULE', False):

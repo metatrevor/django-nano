@@ -1,7 +1,10 @@
+from math import ceil
+
 from django import template
 from django.core.urlresolvers import reverse
 
 from nano.badge.models import Badge
+from nano.tools import grouper
 
 register = template.Library()
 
@@ -24,24 +27,51 @@ def sum_badges(profile):
 
     return levels
 
-@register.simple_tag
-def show_badges(user):
-    profile = user.get_profile()
+def get_badges_for_user(user):
     inner_template = u'<span class="b%i" title="%s %s badge%s">%s</span>%i'
-    outer_template = u'<span>%s</span>'
-
+    profile = user.get_profile()
     levels = sum_badges(profile)
-
     sorted_levels = reversed(sorted(levels.keys()))
-    out = []
+    badge_list = []
     for level in sorted_levels:
         name = SYMBOL_NAMES[level]
         symbol = SYMBOLS[level]
         num_levels = levels[level]
         plural = u's' if num_levels > 1 else u''
-        out.append(inner_template % (level, num_levels, name, plural, symbol, num_levels))
+        badge_list.append(inner_template % (level, num_levels, name, plural, symbol, num_levels))
+    return badge_list
 
-    return outer_template % u' '.join(out)
+@register.simple_tag
+def show_badges(user):
+    outer_template = u'<span>%s</span>'
+
+    badge_list = get_badges_for_user(user)
+
+    return outer_template % u'\xa0'.join(badge_list)
+
+@register.simple_tag
+def show_badges_as_table(user, cols=4):
+    outer_template = u'<table>%s</table>'
+    cell = u'<td>%s</td>'
+    row = u'<tr>%s</tr>\n'
+    single_col = u'<tr><td>%s</td></tr>\n'
+
+    badge_list = get_badges_for_user(user)
+
+    if cols == 1:
+        return [single_col % badge for badge in badge_list]
+    elif cols > 1:
+        piecesize = int(ceil(len(badge_list) / float(cols)))
+        badge_lists = grouper(piecesize, badge_list)
+        outer = []
+        go_over = list(range(cols))
+        for p in range(piecesize):
+            inner = []
+            for i in go_over:
+                inner.append(cell % badge_list[i][p])
+            outer.append(row % u''.join(inner))
+
+    return outer_template % u''.join(outer)
 
 @register.simple_tag
 def show_badge(badge):
