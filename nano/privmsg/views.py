@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic.list_detail import object_list
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
+from django.core.urlresolvers import reverse
 
 from nano.tools import getLogger, pop_error, render_page, get_user_model
 from nano.privmsg.models import PM
@@ -35,7 +36,8 @@ def move_to_archive(request, *args, **kwargs):
     recipient = get_user(request, **kwargs)
     msgid = int(kwargs.get(u'msgid', None))
     _archive(request.user, recipient, (msgid,))
-    return HttpResponseRedirect('.')
+    return HttpResponseRedirect(reverse('nano.privmsg.views.show_pms',
+            kwargs={'object_id': request.user.id}))
 
 def _delete(user, msgids):
     if not msgids:
@@ -49,7 +51,8 @@ def _delete(user, msgids):
 def delete(request, *args, **kwargs):
     msgid = int(kwargs.get(u'msgid', None))
     _delete(request.user, (msgid,))
-    return HttpResponseRedirect('.')
+    return HttpResponseRedirect(reverse('nano.privmsg.views.show_pms',
+            kwargs={'object_id': request.user.id}))
 
 @login_required
 def show_pms(request, *args, **kwargs):
@@ -89,7 +92,8 @@ def add_pm(request, template='privmsg/add.html', *args, **kwargs):
             pm.sender = request.user
             pm.recipient = recipient
             pm.save()
-            return HttpResponseRedirect('.')
+            return HttpResponseRedirect(reverse('nano.privmsg.views.show_pms',
+                    kwargs={'object_id': request.user.id}))
     data = {
             'pms': PM.objects.all(),
             'form': PMForm(),
