@@ -8,9 +8,9 @@ from django.core.mail import send_mail
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 
-#from django.contrib.auth.models import User
-from nano.tools import pop_error, render_page, get_user_model, get_profile_model, add_entry_to_blog
+from nano.tools import pop_error, render_page, get_user_model, get_profile_model
 from nano.user.forms import *
+from nano.user import new_user_created
 
 User = get_user_model()
 Profile = get_profile_model()
@@ -49,11 +49,9 @@ def make_user(username, password):
         if Profile:
             profile = Profile.objects.create(user=user)
             profile.save()
-        if add_entry_to_blog:
-            blog_template = getattr(settings, 'NANO_USER_BLOG_TEMPLATE', 'blog/new_user.html')
-            test_users = getattr(settings, 'NANO_USER_TEST_USERS', ())
-            if not user.username in test_users:
-                add_entry_to_blog(user, '%s just joined' % user.username, blog_template, date_field='date_joined')
+        test_users = getattr(settings, 'NANO_USER_TEST_USERS', ())
+        if not user.username in test_users:
+            new_user_created.send(sender=User, user=user) 
         user.message_set.create(message="You're now registered, as '%s'" % username)
         return user
     else:
