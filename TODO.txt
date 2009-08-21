@@ -2,7 +2,6 @@
 TODO
 ====
 
-- Have ``user`` talk to ``blog`` with signals
 - Setup.py
 - Privmsg-app
 - More utility-functions
