@@ -8,6 +8,7 @@ class Entry(models.Model):
     class Meta:
         db_table = 'nano_blog_entry'
         verbose_name_plural = 'entries'
+        get_latest_by = 'pub_date'
 
     def __unicode__(self):
         return self.headline
