@@ -20,17 +20,16 @@ SYMBOL_NAMES = {
     300: 'gold',
 }
 
-def sum_badges(profile):
+def sum_badges(user):
     levels = {}
-    for badge in profile.badges.all():
+    for badge in user.badges.all():
         levels[badge.level] = levels.setdefault(badge.level, 0) + 1
 
     return levels
 
 def get_badges_for_user(user):
     inner_template = u'<span class="b%i" title="%s %s badge%s">%s</span>%i'
-    profile = user.get_profile()
-    levels = sum_badges(profile)
+    levels = sum_badges(user)
     sorted_levels = reversed(sorted(levels.keys()))
     badge_list = []
     for level in sorted_levels:
@@ -77,6 +76,7 @@ def show_badges_as_table(user, cols=4):
 
 @register.simple_tag
 def show_badge(badge):
+    if not badge: return u''
     template = u'<span class="badge"><a href="%(link)s"><span class="b%(level)i" >%(symbol)s</span> %(name)s</a></span>'
     fillin = {
         'level': badge.level,
