@@ -47,7 +47,9 @@ def show_badges(user):
 
     badge_list = get_badges_for_user(user)
 
-    return outer_template % u'\xa0'.join(badge_list)
+    if badge_list:
+        return outer_template % u'\xa0'.join(badge_list)
+    return u''
 
 @register.simple_tag
 def show_badges_as_table(user, cols=4):
