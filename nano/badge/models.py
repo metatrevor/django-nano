@@ -8,6 +8,14 @@ class DefaultManager(models.Manager):
     pass
 
 class Badge(models.Model):
+    """
+    Three fields:
+        level - integer, default: 100
+        name - text, max. 20 chars
+        description - text, aim for one line
+
+    receivers -> User.badges
+    """
     level = models.PositiveIntegerField(default=100)
     name = models.CharField(max_length=20, unique=True)
     description = models.TextField()
