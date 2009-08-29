@@ -77,9 +77,9 @@ def signup(request, *args, **kwargs):
             # check that username not taken
             userslug = slugify(username)
             if Profile.objects.filter(slug=userslug).count():
-                safe_username = slugify('%s-%s' % (username, str(datetime.now())  
                 # error!
-                request.session['error'] = u"Username '%s' already taken, changed it to '%s'." % (username, safe_username))
+                safe_username = slugify('%s-%s' % (username, str(datetime.now())))
+                request.session['error'] = u"Username '%s' already taken, changed it to '%s'." % (username, safe_username)
                 username = safe_username
 
             # make user
