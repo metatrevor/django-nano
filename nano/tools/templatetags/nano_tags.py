@@ -54,3 +54,10 @@ def fraction(text, arg=1):
     return fraction
 fraction.is_safe = True
 
+#@register.inclusion_tag('come_back.html', takes_context=True)
+def come_back(context):
+    whereami = context.get('whereami')
+    request = context.get('request')
+    if request:
+        path_info = request.META.get('PATH_INFO')
+    return { 'come_back': whereami or path_info or '' }
