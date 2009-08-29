@@ -10,7 +10,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.template.defaultfilters import slugify
 
-from nano.tools import pop_error, render_page, get_user_model, get_profile_model
+from nano.tools import pop_error, render_page, get_user_model, get_profile_model, asciify
 from nano.user.forms import *
 from nano.user import new_user_created
 
@@ -70,7 +70,7 @@ def signup(request, *args, **kwargs):
     if request.method == 'POST':
         form = SignupForm(data=request.POST)
         if form.is_valid():
-            username = form.cleaned_data['username']
+            username = asciify(form.cleaned_data['username'])
             password = form.cleaned_data['password2']
             email = form.cleaned_data['email'].strip() or ''
 
