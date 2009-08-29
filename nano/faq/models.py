@@ -5,7 +5,7 @@ from django.db import models
 class QA(models.Model):
     question = models.CharField(max_length=255)
     answer = models.TextField()
-    last_modified = models.DateTimeField(default=datetime.now)
+    last_modified = models.DateTimeField(default=datetime.now, editable=False)
 
     class Meta:
         db_table = 'nano_faq_qa'
