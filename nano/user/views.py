@@ -1,3 +1,4 @@
+from datetime import datetime
 from random import choice, sample
 import string
 
@@ -7,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
+from django.template.defaultfilters import slugify
 
 from nano.tools import pop_error, render_page, get_user_model, get_profile_model
 from nano.user.forms import *
@@ -71,6 +73,16 @@ def signup(request, *args, **kwargs):
             username = form.cleaned_data['username']
             password = form.cleaned_data['password2']
             email = form.cleaned_data['email'].strip() or ''
+
+            # check that username not taken
+            userslug = slugify(username)
+            if Profile.objects.filter(slug=userslug).count():
+                safe_username = slugify('%s-%s' % (username, str(datetime.now())  
+                # error!
+                request.session['error'] = u"Username '%s' already taken, changed it to '%s'." % (username, safe_username))
+                username = safe_username
+
+            # make user
             user = make_user(username, password)
             user = auth.authenticate(username=username, password=password)
             auth.login(request, user)
