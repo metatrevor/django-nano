@@ -8,10 +8,12 @@ from nano.tools import grouper
 
 register = template.Library()
 
+# \u25cf BLACK CIRCLE
+# \u26ab MEDIUM BLACK CIRCLE (not as common)
 SYMBOLS = {
-    100: u'\u26ab',
-    200: u'\u26ab',
-    300: u'\u26ab',
+    100: u'\u25cf',
+    200: u'\u25cf',
+    300: u'\u25cf',
 }
 
 SYMBOL_NAMES = {
