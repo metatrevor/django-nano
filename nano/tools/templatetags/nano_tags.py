@@ -11,11 +11,19 @@ from nano.tools import grouper
 # 
 # @register.filter
 def startswith(value, arg):
-    """Usage, {% if value|starts_with:"arg" %}"""
+    """Usage, {% if value|startswith:"arg" %}"""
     if value:
         return value.startswith(arg)
     return False
 startswith.is_safe = True
+
+# @register.filter
+def endswith(value, arg):
+    """Usage, {% if value|endswith:"arg" %}"""
+    if value:
+        return value.endswith(arg)
+    return False
+endswith.is_safe = True
 
 #@register.filter
 def nbr(text):
