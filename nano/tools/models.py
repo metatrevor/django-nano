@@ -47,7 +47,7 @@ class UnorderedTreeMixin(models.Model):
         return self._default_manager.filter(part_of__isnull=True)
 
     def get_path(self):
-        return [self._default_manager.get(id=p) for p in unicode(self.path).split(self._sep)]
+        return [self._default_manager.get(id=p) for p in unicode(self.path).split(self._sep) if p]
 
     def descendants(self):
         return self._default_manager.filter(path__startswith=self.path).exclude(id=self.id)
