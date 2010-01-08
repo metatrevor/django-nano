@@ -1,7 +1,8 @@
 import logging
 import unicodedata
 from itertools import izip_longest
-from datetime import datetime
+
+_LOG = logging.getLogger(__name__)
 
 from django.conf import settings
 from django.contrib.auth.models import SiteProfileNotAvailable
@@ -9,17 +10,6 @@ from django.core.exceptions import ImproperlyConfigured
 from django.shortcuts import render_to_response
 from django.template import RequestContext, loader, Context
 from django.db.models import get_model
-
-LOG_FORMAT = getattr(settings, 'NANO_LOG_FORMAT', '%(asctime)s %(name)s %(module)s:%(lineno)d %(levelname)s %(message)s')
-LOG_FILE = getattr(settings, 'NANO_LOG_FILE', '/tmp/nano.log')
-def getLogger(name):
-    log_formatter = logging.Formatter(LOG_FORMAT)
-    log_handler = logging.FileHandler(LOG_FILE, 'a+')
-    log_handler.setFormatter(log_formatter)
-    logger = logging.getLogger(name)
-    logger.addHandler(log_handler)
-    return logger
-LOG = getLogger('nano.tools')
 
 def nullfunction(return_this=None, *args, **kwargs):
     "Do-nothing dummy-function"
@@ -59,7 +49,6 @@ Profile = get_profile_model()
 def get_user_model():
     app_label, model_name = getattr(settings, 'NANO_USER_MODEL', 'auth.User').split('.')
     return get_model(app_label, model_name)
-User = get_user_model()
 
 if 'nano.blog' in settings.INSTALLED_APPS:
     try:
