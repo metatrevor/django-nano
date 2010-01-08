@@ -34,6 +34,8 @@ nbr.is_safe = True
 
 #@register.filter
 def partition(iterable, cols=4):
+    if not iterable:
+        return ()
     try:
         cols = int(cols)
     except (ValueError, TypeError):
