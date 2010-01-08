@@ -15,9 +15,15 @@ from django.utils.translation import ugettext_lazy as _
 from nano.tools import get_user_model
 User = get_user_model()
 
+class UnorderedTreeManager(models.Manager):
+    def roots(self):
+        return self.get_query_set().filter(part_of__isnull=True)
+
 class UnorderedTreeMixin(models.Model):
-    part_of = models.ForeignKey('self', blank=True, null=True, default=None)
+    part_of = models.ForeignKey('self', blank=True, null=True, default=None, related_name='has_%(class)s_children')
     path = models.CharField(max_length=255, blank=True, default='')
+
+    tree = UnorderedTreeManager()
 
     _sep = u'/'
 
