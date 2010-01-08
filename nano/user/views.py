@@ -6,6 +6,7 @@ from django.conf import settings
 from django.contrib import auth 
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
+from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.template.defaultfilters import slugify
@@ -42,24 +43,27 @@ def make_user(username, password):
         user = User.objects.get(username=username)
     except User.DoesNotExist:
         # make user
-        user = User(username=username)
+        user = User(username=username[:30])
         user.set_password(password)
         user.is_staff = False
         user.is_superuser = False
         user.is_active = True
         user.save()
         if Profile:
-            profile = Profile.objects.create(user=user)
+            profile = Profile(user=user, display_name=username)
             profile.save()
         test_users = getattr(settings, 'NANO_USER_TEST_USERS', ())
-        if not user.username in test_users:
+        for test_user in test_users:
+            if user.username.startswith(test_user):
+                break
+        else:
             new_user_created.send(sender=User, user=user) 
         user.message_set.create(message="You're now registered, as '%s'" % username)
         return user
     else:
         raise NanoUserExistsError, "The username '%s' is already in use by somebody else" % username
 
-def signup(request, *args, **kwargs):
+def signup(request, template_name='signup.html', *args, **kwargs):
     me = 'people'
     error = pop_error(request)
     data = {
@@ -87,8 +91,14 @@ def signup(request, *args, **kwargs):
             user = auth.authenticate(username=username, password=password)
             auth.login(request, user)
             request.session['error'] = None
-            return HttpResponseRedirect('/signup/done/')
-    return render_page(request, 'signup.html', data)
+            next = getattr(settings, 'NANO_USER_SIGNUP_NEXT', reverse('nano_user_signup_done'))
+            try:
+                next_profile = user.get_profile().get_absolute_url()
+                return HttpResponseRedirect(next_profile)
+            except Profile.DoesNotExist:
+                pass
+            return HttpResponseRedirect(next)
+    return render_page(request, template_name, data)
 
 @login_required
 def password_change(request, *args, **kwargs):
