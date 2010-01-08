@@ -12,10 +12,11 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.core.urlresolvers import resolve
 from django.views.generic.list_detail import object_list
+from django.utils.html import escape
 
 from nano.tools import render_page
 
-from nano.comments.models import *
+from nano.comments.models import Comment
 from nano.comments.forms import *
 
 def _get_contenttype(model):
@@ -66,7 +67,6 @@ def post_comment(request, object_arg='object_id', object_field=None, model=None,
     good_data['content_type'] = contenttype
     good_data['object_pk'] = str(object.id)
     good_data['user'] = request.user
-    good_data['added'] = datetime.utcnow()
     good_data['part_of'] = part_of
 
     data = {}
@@ -82,15 +82,19 @@ def post_comment(request, object_arg='object_id', object_field=None, model=None,
                 good_data['object_pk'] = str(cpart_of.content_object.pk)
             good_data['part_of'] = part_of
             good_data['comment'] = form.cleaned_data['comment']
-            good_data['comment_xhtml'] = good_data['comment']
+            good_data['comment_xhtml'] = escape(good_data['comment'])
 
             if cpart_of or (contenttype and object):
                 if request.POST.get('submit'):
                     if good_data['part_of']:
                         good_data['part_of'] = Comment.objects.get(id=int(part_of))
                     else:
-                        good_data['part_of'] = None
-                    c = Comment(**good_data)
+                        del good_data['part_of']
+                    try:
+                        c = Comment(**good_data)
+                    except TypeError:
+                        assert False, repr(Comment)
+                        raise
                     c.save()
                     return HttpResponseRedirect('../')
                 else:
