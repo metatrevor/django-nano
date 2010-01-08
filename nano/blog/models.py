@@ -8,7 +8,15 @@ class Entry(models.Model):
     class Meta:
         db_table = 'nano_blog_entry'
         verbose_name_plural = 'entries'
+        ordering = ('-pub_date',)
         get_latest_by = 'pub_date'
 
     def __unicode__(self):
         return self.headline
+
+# Optional support for tags (django-tagging)
+try:
+    import tagging
+    tagging.register(Entry)
+except ImportError:
+    pass
