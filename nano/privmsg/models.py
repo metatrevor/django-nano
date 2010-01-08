@@ -3,8 +3,7 @@ from datetime import datetime
 
 from django.db import models
 
-import nano.tools
-from nano.tools.models import AbstractText#, ShunList
+from nano.tools.models import AbstractText
 from nano.tools import get_user_model
 User = get_user_model()
 

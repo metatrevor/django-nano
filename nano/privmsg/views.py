@@ -4,7 +4,10 @@ from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
 
-from nano.tools import getLogger, pop_error, render_page, get_user_model
+import logging
+_LOG = logging.getLogger(__name__)
+
+from nano.tools import pop_error, render_page, get_user_model
 from nano.privmsg.models import PM
 from nano.privmsg.forms import *
 
@@ -33,26 +36,68 @@ def _archive(user, recipient, msgids):
 
 @login_required
 def move_to_archive(request, *args, **kwargs):
+    next = request.GET.get('next', None)
     recipient = get_user(request, **kwargs)
     msgid = int(kwargs.get(u'msgid', None))
     _archive(request.user, recipient, (msgid,))
-    return HttpResponseRedirect(reverse('nano.privmsg.views.show_pms',
+    if next:
+        return HttpResponseRedirect(next)
+    return HttpResponseRedirect(reverse('nano.privmsg.views.show_pm_archived',
             kwargs={'object_id': request.user.id}))
 
-def _delete(user, msgids):
-    if not msgids:
+def _delete(user, msgid):
+    if not msgid:
         raise Http404
-    pms = PM.objects.filter(id__in=msgids)
-    rpms = pms.filter(recipient=user).update(recipient_deleted=True)
-    spms = pms.filter(sender=user).update(sender_deleted=True)
-    pms.delete()
+    pm = PM.objects.get(id=msgid)
+    if pm.recipient == user:
+        pm.recipient_deleted=True
+    if pm.sender == user:
+        pm.sender_deleted=True
+    pm.save()
+    pm.delete()
 
 @login_required
 def delete(request, *args, **kwargs):
+    next = request.GET.get('next', None)
     msgid = int(kwargs.get(u'msgid', None))
-    _delete(request.user, (msgid,))
-    return HttpResponseRedirect(reverse('nano.privmsg.views.show_pms',
+    _delete(request.user, msgid)
+    if next:
+        return HttpResponseRedirect(next)
+    return HttpResponseRedirect(reverse('nano.privmsg.views.show_pm_received',
             kwargs={'object_id': request.user.id}))
+
+@login_required
+def show_pm_archived(request, *args, **kwargs):
+    recipient = get_user(request, **kwargs)
+    if recipient != request.user:
+        raise Http404
+    messages = PM.objects.archived(request.user)
+    template = 'privmsg/list_archived.html'
+    data = {'pms': messages,
+            }
+    return render_page(request, template, data)
+
+@login_required
+def show_pm_sent(request, *args, **kwargs):
+    recipient = get_user(request, **kwargs)
+    if recipient != request.user:
+        raise Http404
+    messages = PM.objects.sent(request.user)
+    template = 'privmsg/list_sent.html'
+    data = {'pms': messages,
+            }
+    return render_page(request, template, data)
+
+@login_required
+def show_pm_received(request, *args, **kwargs):
+    recipient = get_user(request, **kwargs)
+    if recipient != request.user:
+        raise Http404
+    messages = PM.objects.received(request.user)
+    template = 'privmsg/list_received.html'
+    data = {'pms': messages,
+            }
+    return render_page(request, template, data)
 
 @login_required
 def show_pms(request, *args, **kwargs):
@@ -72,7 +117,7 @@ def show_pms(request, *args, **kwargs):
         action = request.POST.get(u'submit')
         #assert False, '%s %s' % (action, msgids)
         if action == u'delete':
-            _delete(request.user, msgids)
+            _delete(request.user, msgids[0])
         elif action == u'archive':
             _archive(request.user, recipient, msgids)
     template = 'privmsg/archive.html'
@@ -85,6 +130,7 @@ def show_pms(request, *args, **kwargs):
 def add_pm(request, template='privmsg/add.html', *args, **kwargs):
     form = PMForm()
     recipient = get_user(request, **kwargs)
+    next = request.GET.get('next', None)
     if request.method == 'POST':
         form = PMForm(data=request.POST)
         if form.is_valid():
@@ -92,8 +138,11 @@ def add_pm(request, template='privmsg/add.html', *args, **kwargs):
             pm.sender = request.user
             pm.recipient = recipient
             pm.save()
-            return HttpResponseRedirect(reverse('nano.privmsg.views.show_pms',
-                    kwargs={'object_id': request.user.id}))
+            if next:
+                return HttpResponseRedirect(next)
+            else:
+                return HttpResponseRedirect(reverse('nano.privmsg.views.show_pm_sent',
+                        kwargs={'object_id': request.user.id}))
     data = {
             'pms': PM.objects.all(),
             'form': PMForm(),
