@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.views.generic.list_detail import object_list
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
@@ -7,12 +8,11 @@ from django.core.urlresolvers import reverse
 import logging
 _LOG = logging.getLogger(__name__)
 
-from nano.tools import pop_error, render_page, get_user_model
+from nano.tools import pop_error, render_page
 from nano.privmsg.models import PM
 from nano.privmsg.forms import *
 
 def get_user(request, **kwargs):
-    User = get_user_model()
     username = kwargs.get(u'username', None) or request.REQUEST.get(u'username', None)
     try:
         return User.objects.get(username=username)

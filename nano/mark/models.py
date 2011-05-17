@@ -3,16 +3,14 @@ from datetime import datetime
 
 from django.template.defaultfilters import slugify
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.auth.models import User
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 #from django.conf import settings
 
 from nano.tools.models import GenericForeignKeyAbstractModel
-from nano.tools import get_user_model
 
 from nano.mark.managers import MarksManager
-
-User = get_user_model() 
 
 class MarkedMixin(models.Model):
     "Used by marked models"

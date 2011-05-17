@@ -5,17 +5,17 @@ import string
 from django.conf import settings
 from django.contrib import auth, messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.template.defaultfilters import slugify
 
-from nano.tools import pop_error, render_page, get_user_model, get_profile_model, asciify
+from nano.tools import pop_error, render_page, get_profile_model, asciify
 from nano.user.forms import *
 from nano.user import new_user_created
 
-User = get_user_model()
 Profile = get_profile_model()
 
 class NanoUserError(Exception):

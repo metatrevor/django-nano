@@ -2,10 +2,9 @@
 from datetime import datetime
 
 from django.db import models
+from django.contrib.auth.models import User
 
 from nano.tools.models import AbstractText
-from nano.tools import get_user_model
-User = get_user_model()
 
 class PMManager(models.Manager):
     def sent(self, user):
