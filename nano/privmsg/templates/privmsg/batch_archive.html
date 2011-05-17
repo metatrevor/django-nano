@@ -2,6 +2,7 @@
 {% block content %}
     <h1>Messages ({{ action }})</h2>
     <form method="POST" action=".">
+    {% csrf_token %}
     <dl>
     {% for message in pms %}
     <dt><input type="checkbox" name="msgid" value="{{ message.id }}"/><b>{{ message.subject }}</b> 
