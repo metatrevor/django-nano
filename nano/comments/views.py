@@ -49,11 +49,12 @@ def post_comment(request, object_arg='object_id', object_field=None, model=None,
     fetched from the field named in ``object_field``"""
 
     object_id = kwargs.get(object_arg, None)
+    kwargs.pop(object_arg)
     assert object_id
     assert model
 
     contenttype = _get_contenttype(model)
-    object = _get_object(model, object_id, object_field, **kwargs)
+    object = _get_object(model, object_id, object_field=object_field, **kwargs)
     part_of = request.REQUEST.get('part_of', None) or part_of
 
     cpart_of = None
