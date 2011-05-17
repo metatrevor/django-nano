@@ -44,7 +44,6 @@ def get_profile_model():
     except ImproperlyConfigured:
         raise SiteProfileNotAvailable
     return model
-Profile = get_profile_model()
 
 def get_user_model():
     app_label, model_name = getattr(settings, 'NANO_USER_MODEL', 'auth.User').split('.')

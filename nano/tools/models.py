@@ -12,9 +12,6 @@ from django.core import urlresolvers
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from nano.tools import get_user_model
-User = get_user_model()
-
 class UnorderedTreeManager(models.Manager):
     def roots(self):
         return self.get_query_set().filter(part_of__isnull=True)

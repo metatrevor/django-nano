@@ -2,13 +2,11 @@ from datetime import datetime
 
 from django.conf import settings
 from django.db import models
+from django.contrib.auth.models import User
 
-from nano.tools import get_user_model
 from nano.tools.models import UnorderedTreeMixin, GenericForeignKeyAbstractModel
 
 COMMENT_MAX_LENGTH = getattr(settings,'COMMENT_MAX_LENGTH',3000)
-
-User = get_user_model() 
 
 class Comment(GenericForeignKeyAbstractModel, UnorderedTreeMixin):
     user = models.ForeignKey(User,

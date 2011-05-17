@@ -1,8 +1,5 @@
 from django.db import models
-
-from nano.tools import get_user_model, get_profile_model
-
-User = get_user_model()
+from django.contrib.auth.models import User
 
 class DefaultManager(models.Manager):
     pass
