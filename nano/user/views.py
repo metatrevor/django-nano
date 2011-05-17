@@ -3,7 +3,7 @@ from random import choice, sample
 import string
 
 from django.conf import settings
-from django.contrib import auth 
+from django.contrib import auth, messages
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
@@ -38,7 +38,7 @@ def random_password():
         outlist.extend(chars)
     return ''.join(outlist)
 
-def make_user(username, password, email=None):
+def make_user(username, password, email=None, request=None):
     try:
         user = User.objects.get(username=username)
     except User.DoesNotExist:
@@ -60,7 +60,8 @@ def make_user(username, password, email=None):
                 break
         else:
             new_user_created.send(sender=User, user=user) 
-        user.message_set.create(message="You're now registered, as '%s'" % username)
+        if request is not None:
+            messages.info(request, u"You're now registered, as '%s'" % username)
         return user
     else:
         raise NanoUserExistsError, "The username '%s' is already in use by somebody else" % username
@@ -89,7 +90,7 @@ def signup(request, template_name='signup.html', *args, **kwargs):
                 username = safe_username
 
             # make user
-            user = make_user(username, password, email=email)
+            user = make_user(username, password, email=email, request=request)
             user = auth.authenticate(username=username, password=password)
             auth.login(request, user)
             request.session['error'] = None
