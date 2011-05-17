@@ -8,6 +8,7 @@ class SignupForm(forms.Form):
                     """be shown instead of the username""",
             'email': """Used to mail you your password, """
                     """should you forget it""",
+            'tt1': """If you're human, leave this field empty""",
             'username': """Preferrably ASCII, without punctuation and spaces, and lowercase""",
     }
     username = forms.CharField(label='Username', max_length=30,
@@ -16,6 +17,8 @@ class SignupForm(forms.Form):
     password1 = forms.CharField(label='Password', max_length=30, widget=forms.PasswordInput)
     password2 = forms.CharField(label='Repeat password', max_length=30, widget=forms.PasswordInput)
     email = forms.EmailField(label='Email', required=True, help_text=help_text['email'])
+    turing_test1 = forms.CharField(label='Turing test',
+            required=False, max_length=10, help_text=help_text['tt1'])
 
     def clean_password2(self):
         password1 = self.cleaned_data.get('password1')
@@ -24,6 +27,12 @@ class SignupForm(forms.Form):
             if password1 != password2:
                 raise forms.ValidationError("The two password fields didn't match.")
         return password2
+
+    def clean_turing_test1(self):
+        tt = self.cleaned_data.get('turing_test1').strip()
+        if tt:
+            raise forms.ValidationError("You failed the Turing Test")
+        return tt
 
 class PasswordChangeForm(forms.Form):
     password1 = forms.CharField(label='New password', max_length=30, widget=forms.PasswordInput)
