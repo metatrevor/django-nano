@@ -34,7 +34,7 @@ class Comment(GenericForeignKeyAbstractModel, UnorderedTreeMixin):
 
     def get_absolute_url(self, anchor_pattern="#c%(id)s"):
         content_url = self.get_content_object_url()
-        annchor = anchor_pattern % self.__dict__
+        anchor = anchor_pattern % self.__dict__
         if content_url:
             return content_url + anchor
         return anchor
