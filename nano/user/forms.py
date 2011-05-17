@@ -6,15 +6,16 @@ class SignupForm(forms.Form):
             'last_name': """If you set "Personal name" or """
                     """"Family name", these will """
                     """be shown instead of the username""",
-            'email': """Only used to mail you your password, """
+            'email': """Used to mail you your password, """
                     """should you forget it""",
+            'username': """Preferrably ASCII, without punctuation and spaces, and lowercase""",
     }
     username = forms.CharField(label='Username', max_length=30,
             min_length=2, 
-            help_text="Will be stored as ASCII")
+            help_text=help_text['username'])
     password1 = forms.CharField(label='Password', max_length=30, widget=forms.PasswordInput)
     password2 = forms.CharField(label='Repeat password', max_length=30, widget=forms.PasswordInput)
-    email = forms.EmailField(label='Email', required=False, help_text=help_text['email'])
+    email = forms.EmailField(label='Email', required=True, help_text=help_text['email'])
 
     def clean_password2(self):
         password1 = self.cleaned_data.get('password1')
