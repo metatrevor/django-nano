@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from distutils.core import setup
+from setuptools import find_packages
 
 README_FILE = open('README.txt')
 try:
@@ -8,16 +9,47 @@ try:
 finally:
     README_FILE.close()
 
+exclude = [
+        'nano.foo',
+        'nano.foo.templatetags',
+        'nano.foo.views',
+        'nano.link',
+        'nano.menu',
+        'nano.menu.templatetags',
+        'nano.timeline',
+        'nano.tracker',
+        'nano.twitterauth',
+        'nano.twitterauth.lib',
+        'nano.uri',
+        'nano.web20',
+        'nano.web20.templatetags',
+        'nano.yubiauth',
+]
+
+packages=(
+        'nano',
+        'nano.activation', 
+        'nano.badge', 
+        'nano.blog',
+        'nano.comments',
+        'nano.faq',
+        'nano.mark',
+        'nano.privmsg',
+        'nano.tools',
+        'nano.user',
+)
+
 setup(name='nano',
         version='0.3',
-        packages=('nano',),
+        packages=find_packages(exclude=exclude),
+        include_package_data=True,
+        zip_safe=False,
         platforms=['any'],
         description='Does less! Loosely coupled mini-apps for django.',
         author_email='kaleissin@gmail.com',
         author='kaleissin',
         long_description=long_description,
         url='http://code.google.com/p/django-nano/',
-        download_url='http://code.google.com/p/django-nano/source/checkout',
         classifiers=[
                 'Development Status :: 4 - Beta',
                 'Environment :: Web Environment',
