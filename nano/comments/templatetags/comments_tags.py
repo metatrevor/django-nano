@@ -10,15 +10,15 @@ from nano.comments.models import *
 register = template.Library()
 
 @register.inclusion_tag('nano/comments/comment_list_frag.html')
-def show_comments(object):
-    contenttype = ContentType.objects.get_for_model(object)
-    comments = Comment.objects.filter(object_pk=str(object.id), content_type=contenttype)
+def show_comments(obj):
+    contenttype = ContentType.objects.get_for_model(obj)
+    comments = Comment.objects.filter(object_pk=str(obj.pk), content_type=contenttype)
     return {'comments': comments}
 
 @register.inclusion_tag('nano/comments/comment_tree_frag.html')
-def show_comments_tree(object):
-    contenttype = ContentType.objects.get_for_model(object)
-    comments = Comment.tree.roots().filter(object_pk=str(object.id), content_type=contenttype)
+def show_comments_tree(obj):
+    contenttype = ContentType.objects.get_for_model(obj)
+    comments = Comment.tree.roots().filter(object_pk=str(obj.pk), content_type=contenttype)
     return {'comments': comments}
 
 @register.inclusion_tag('nano/comments/comment_tree_node_frag.html')
