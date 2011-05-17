@@ -9,7 +9,7 @@ finally:
     README_FILE.close()
 
 setup(name='nano',
-        version='0.2',
+        version='0.3',
         packages=('nano',),
         platforms=['any'],
         description='Does less! Loosely coupled mini-apps for django.',

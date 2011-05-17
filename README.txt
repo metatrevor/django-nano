@@ -6,20 +6,23 @@ This is a set of nano-size tools and apps for Django 1.0 and later.
 
 Currently included:
 
+activation
+    A place to store activation-codes for for instance authentication
+
 badge
     User-badges worth certain points ala. StackOverflow
 
 blog
     A very basic blog-app 
 
+comments
+    Unmoderated comments for logged-in users
+
 faq
     Just about as simple a FAQ as is possible
 
 privmsg
     Private messages with separate archives for sent an received
-
-comments
-    Unmoderated comments for logged-in users
 
 user
     A very basic user-registration- and password-handling app/tool
@@ -82,4 +85,4 @@ NANO_LOG_FILE
     **Default:** ``'/tmp/nano.log'``
 
 
-:Version: 0.2
+:Version: 0.3
