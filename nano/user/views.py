@@ -38,7 +38,7 @@ def random_password():
         outlist.extend(chars)
     return ''.join(outlist)
 
-def make_user(username, password):
+def make_user(username, password, email=None):
     try:
         user = User.objects.get(username=username)
     except User.DoesNotExist:
@@ -48,6 +48,8 @@ def make_user(username, password):
         user.is_staff = False
         user.is_superuser = False
         user.is_active = True
+        if email:
+            user.email = email
         user.save()
         if Profile:
             profile = Profile(user=user, display_name=username)
@@ -87,7 +89,7 @@ def signup(request, template_name='signup.html', *args, **kwargs):
                 username = safe_username
 
             # make user
-            user = make_user(username, password)
+            user = make_user(username, password, email=email)
             user = auth.authenticate(username=username, password=password)
             auth.login(request, user)
             request.session['error'] = None
