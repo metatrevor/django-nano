@@ -35,14 +35,19 @@ def grouper(n, iterable, fillvalue=None):
 
 def get_profile_model():
     if not getattr(settings, 'AUTH_PROFILE_MODULE', False):
-        return None
+        error = "AUTH_PROFILE_MODULE isn't set in the settings, couldn't fetch profile"
+        _LOG.error(error)
+        raise SiteProfileNotAvailable, error
     try:
         app_label, model_name = settings.AUTH_PROFILE_MODULE.split('.')
         model = get_model(app_label, model_name)
     except ImportError:
-        return None
+        error = "Could not import the profile '%s' given in AUTH_PROFILE_MODULE" % settings.AUTH_PROFILE_MODULE
+        _LOG.error(error)
+        raise SiteProfileNotAvailable, error
     except ImproperlyConfigured:
-        raise SiteProfileNotAvailable
+        error = "An unknown error happened while fetching the profile model"
+        raise SiteProfileNotAvailable, error
     return model
 
 def get_user_model():
