@@ -37,3 +37,15 @@ class Comment(GenericForeignKeyAbstractModel, UnorderedTreeMixin):
             return content_url + anchor
         return anchor
 
+    def roots(self):
+        tree = self._default_manager.filter(part_of__isnull=True)
+        return tree.filter(content_type=self.content_type, object_pk=self.object_pk)
+
+    def get_path(self):
+        return [self._default_manager.get(id=p).filter(content_type=self.content_type, object_pk=self.object_pk) 
+                for p in unicode(self.path).split(self._sep) if p]
+
+    def descendants(self):
+        tree = self._default_manager.filter(path__startswith=self.path).exclude(id=self.id)
+        return tree.filter(content_type=self.content_type, object_pk=self.object_pk)
+
