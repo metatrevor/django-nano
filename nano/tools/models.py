@@ -108,26 +108,6 @@ class PathMixin(models.Model):
             return True
         return False
 
-class AbstractShunList(models.Model):
-    """AbstractShunList
-        User x shuns User y: one of:
-         - ``ShunList.objects.create(user=x, shuns=y)``
-         - ``x.shuns.add(y)``
-         - ``y.shunned_by.add(x)``
-
-    """
-    
-    user = models.ForeignKey(User, related_name='%(class)s_shuns')
-    shuns = models.ForeignKey(User, related_name='%(class)s_shunned_by')
-
-    class Meta:
-        abstract = True
-
-# class ShunList(AbstractShunList):
-# 
-#     class Meta:
-#         db_table = 'nano_tools_shunlist'
-# 
 class AbstractText(models.Model):
     "Denormalized storage of text"
     DEFAULT_TYPE = 'plaintext'
