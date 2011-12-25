@@ -29,6 +29,7 @@ class EntryAdmin(admin.ModelAdmin):
     model = Entry
     list_display = ('headline', 'pub_date')
     date_hierarchy = 'pub_date'
+    search_fields = ('headline', 'content')
     if tag_devel:
         actions = [tag_devel]
         #actions = [tag_devel, untag_devel]
