@@ -5,7 +5,7 @@ from itertools import izip_longest
 _LOG = logging.getLogger(__name__)
 
 from django.conf import settings
-from django.contrib.auth.models import SiteProfileNotAvailable, User
+from django.contrib.auth.models import SiteProfileNotAvailable
 from django.core.exceptions import ImproperlyConfigured
 from django.shortcuts import render_to_response
 from django.template import RequestContext, loader, Context

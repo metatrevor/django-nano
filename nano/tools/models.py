@@ -80,34 +80,6 @@ class UnorderedTreeMixin(models.Model):
 
         return self.descendants().count() == 0
 
-class PathField(models.Field):
-    __metaclass__ = models.SubfieldBase
-
-    def __init__(self, *args, **kwargs):
-        super(PathField, self).__init__(*args, **kwargs)
-
-    def db_type(self):
-        return 'text'
-
-class PathMixin(models.Model):
-    path = models.TextField()
-
-    class Meta:
-        abstract = True
-
-    def save(self, parent=None, *args, **kwargs):
-        if not parent:
-            self.path = str(self.id) + '/'
-#         else:
-#             parentpath = 
-        
-        super(PathMixin, self).save(*args, **kwargs)
-
-    def is_ancestor(self, obj):
-        if self.path.startswith(obj.path):
-            return True
-        return False
-
 class AbstractText(models.Model):
     "Denormalized storage of text"
     DEFAULT_TYPE = 'plaintext'
