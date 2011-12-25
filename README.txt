@@ -2,12 +2,12 @@
 Nano tools
 ==========
 
-This is a set of nano-size tools and apps for Django 1.0 and later.
+This is a set of nano-size tools and apps for Django 1.3 and later.
 
 Currently included:
 
 activation
-    A place to store activation-codes for for instance authentication
+    A place to store activation-codes for e.g. authentication
 
 badge
     User-badges worth certain points ala. StackOverflow
@@ -17,6 +17,9 @@ blog
 
 comments
     Unmoderated comments for logged-in users
+
+chunk
+    Templates stored in the database
 
 faq
     Just about as simple a FAQ as is possible
@@ -41,8 +44,15 @@ Usage
 
 The apps and tools are in the namespace ``nano``.
 
+Common for all apps
+++++++++
+
 Append ``nano.<subapp>`` to your INSTALLED_APPS, where ``subapp`` is any
 of the tools listed above except ``tools``.
+
+chunk
++++++
+    Add 'nano.chunk.loader.Loader' to TEMPLATE_LOADERS.
 
 user
 ++++
@@ -85,4 +95,4 @@ NANO_LOG_FILE
     **Default:** ``'/tmp/nano.log'``
 
 
-:Version: 0.3
+:Version: 0.4
