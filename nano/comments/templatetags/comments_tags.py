@@ -27,13 +27,13 @@ def show_comments_subtree(subtree):
     return {'comments': comments}
 
 @register.simple_tag
-def show_comment_count(object):
-    contenttype = ContentType.objects.get_for_model(object)
-    comments = Comment.objects.filter(object_pk=str(object.pk), content_type=contenttype).count()
+def show_comment_count(obj):
+    contenttype = ContentType.objects.get_for_model(obj)
+    comments = Comment.objects.filter(object_pk=str(obj.pk), content_type=contenttype).count()
     return comments
 
 @register.filter
-def comment_count(object):
-    contenttype = ContentType.objects.get_for_model(object)
-    comments = Comment.objects.filter(object_pk=str(object.pk), content_type=contenttype).count()
+def comment_count(obj):
+    contenttype = ContentType.objects.get_for_model(obj)
+    comments = Comment.objects.filter(object_pk=str(obj.pk), content_type=contenttype).count()
     return comments
