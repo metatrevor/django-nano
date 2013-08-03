@@ -52,7 +52,18 @@ of the tools listed above except ``tools``.
 
 chunk
 +++++
+
     Add 'nano.chunk.loader.Loader' to TEMPLATE_LOADERS.
+
+comments
+++++++++
+
+    Comments can be tagged using ``django-taggit`` or ``django-tagging`` if either
+    of those is in INSTALLED_APPS *and* NANO_BLOG_USE_TAGS is set to
+    True in settings. It will prefer ``django-taggit``. It is also
+    possible to convert from ``django-tagging`` to ``django-taggit``
+    using the management command ``migrate_tagging_to_taggit``. This
+    will convert *all* tags, not just those for comments.
 
 user
 ++++
@@ -82,4 +93,4 @@ NANO_USER_BLOG_TEMPLATE
     **Default:** ``blog/new_user.html``
 
 
-:Version: 0.4
+:Version: 0.5
