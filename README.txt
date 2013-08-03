@@ -81,18 +81,5 @@ NANO_USER_BLOG_TEMPLATE
 
     **Default:** ``blog/new_user.html``
 
-Settings for all apps
----------------------
-
-NANO_LOG_FORMAT
-    Format for logs, see Python's ``logging``-module
-
-    **Default:** ``'%(asctime)s %(name)s %(module)s:%(lineno)d %(levelname)s %(message)s'``
-
-NANO_LOG_FILE
-    File to log to, see Python's ``logging``-module
-
-    **Default:** ``'/tmp/nano.log'``
-
 
 :Version: 0.4
