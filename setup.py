@@ -15,8 +15,6 @@ exclude = [
         'nano.menu.templatetags',
         'nano.timeline',
         'nano.tracker',
-        'nano.twitterauth',
-        'nano.twitterauth.lib',
         'nano.uri',
         'nano.web20',
         'nano.web20.templatetags',
@@ -38,7 +36,7 @@ packages=(
 )
 
 setup(name='nano',
-        version='0.4',
+        version='0.5',
         packages=find_packages(exclude=exclude),
         include_package_data=True,
         zip_safe=False,
