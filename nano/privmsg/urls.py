@@ -1,5 +1,4 @@
 from django.conf.urls.defaults import *
-from django.views.generic.simple import direct_to_template
 
 urlpatterns = patterns('nano.privmsg.views',
     url(r'^add$',          'add_pm', name='add_pm'),

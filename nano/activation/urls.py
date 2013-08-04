@@ -5,8 +5,8 @@ urlpatterns = patterns('nano.activation.views',
 )
 
 urlpatterns += patterns('',
-    url(r'^activation_ok/$', 'django.views.generic.simple.direct_to_template', 
-            {'template': 'nano/activation/activated.html'
-            }, name='nano-activation-ok'),
+    url(r'^activation_ok/$', 'django.shortcuts.render', 
+                             {'template_name': 'nano/activation/activated.html'},
+                             name='nano-activation-ok'),
 )
 
