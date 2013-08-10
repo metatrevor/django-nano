@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load url from future %}
 
 {% block title %}{{ block.super }} – Private messages: {{ action }}{% endblock title %}
 {% block content %}
@@ -10,7 +11,7 @@
     <a href="./{{ pm.id }}/archive/">archive</a>
     <a href="./{{ pm.id }}/delete/">delete</a>
     {% else %}
-    <a href="{% url delete_pm object_id=pm.recipient.id,msgid=message.id %}">DELETE</a>
+    <a href="{% url 'delete_pm' object_id=pm.recipient.id,msgid=message.id %}">DELETE</a>
     <a href="../{{ pm.id }}/delete/">delete</a>
     {% endifequal %}
     </dt>
