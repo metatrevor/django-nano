@@ -33,52 +33,58 @@ user
 tools
     Utility-functions used by the above apps
 
+Dependencies
+------------
+
+This version will run on Django 1.3 if you rewrite the templates
+(search for **{% url '**) and Django 1.4 and newer otherwise.
+
 Installation
 ------------
 
-See INSTALL.txt for installation-instructions and TODO.txt for what's
-missing.
+See INSTALL.txt for installation-instructions and TODO.txt for
+what's missing.
 
 Usage
 -----
 
-The apps and tools are in the namespace ``nano``.
-
 Common for all apps
-++++++++
++++++++++++++++++++
 
-Append ``nano.<subapp>`` to your INSTALLED_APPS, where ``subapp`` is any
-of the tools listed above except ``tools``.
+Append ``nano.<subapp>`` to your INSTALLED_APPS, where ``subapp``
+is any of the tools listed above except ``tools``.
 
 chunk
 +++++
 
-    Add 'nano.chunk.loader.Loader' to TEMPLATE_LOADERS.
+Add 'nano.chunk.loader.Loader' to TEMPLATE_LOADERS.
 
 comments
 ++++++++
 
-    Comments can be tagged using ``django-taggit`` or ``django-tagging`` if either
-    of those is in INSTALLED_APPS *and* NANO_BLOG_USE_TAGS is set to
-    True in settings. It will prefer ``django-taggit``. It is also
-    possible to convert from ``django-tagging`` to ``django-taggit``
-    using the management command ``migrate_tagging_to_taggit``. This
-    will convert *all* tags, not just those for comments.
+Comments can be tagged using ``django-taggit`` or ``django-tagging``
+if either of those is in INSTALLED_APPS *and* NANO_BLOG_USE_TAGS
+is set to True in settings. It will prefer ``django-taggit``. It
+is also possible to convert from ``django-tagging`` to
+``django-taggit`` using the management command
+``migrate_tagging_to_taggit``. This will convert *all* tags, not
+just those for comments.
 
 user
 ++++
-    Doesn't have any models so just hook up the views in an urls.py:
 
-    - ``signup()``
-    - ``password_change()``
-    - ``password_reset()``
+Doesn't have any models so just hook up the views in an urls.py:
+
+- ``signup()``
+- ``password_change()``
+- ``password_reset()``
 
 Settings for user
 .................
 
 NANO_USER_EMAIL_SENDER
-    The From:-address on a password-reset email. If unset, no email is
-    sent.
+    The From:-address on a password-reset email. If unset, no
+    email is sent.
 
     **Default:** Not set
 
