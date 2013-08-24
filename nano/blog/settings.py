@@ -26,3 +26,5 @@ else:
 # Explicit is better than implicit
 if not getattr(settings, 'NANO_BLOG_USE_TAGS', False):
     NANO_BLOG_TAGS = False
+
+SPECIAL_TAGS = getattr(settings, 'NANO_BLOG_SPECIAL_TAGS', ('pinned',))

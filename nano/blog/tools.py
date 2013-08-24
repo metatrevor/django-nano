@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from django.template.loader import render_to_string
 
 from nano.blog.models import Entry as _Entry
-from nano.blog.settings import NANO_BLOG_TAGS
+from nano.blog.settings import NANO_BLOG_TAGS, SPECIAL_TAGS
 
 _five_minutes = timedelta(seconds=5*60)
 
@@ -25,7 +25,7 @@ def add_entry_to_blog(obj, headline, template, date_field='last_modified'):
         blog_entry = _Entry.objects.create(content=template,headline=headline,pub_date=pub_date)
         return blog_entry
 
-def get_nano_blog_entries(special_tags=('devel','milestone'), cutoff=2):
+def get_nano_blog_entries(special_tags=SPECIAL_TAGS, cutoff=2):
     """Fetch <cutoff> number of most recent blog entries and split out
     entries tagged with <special_tags>.
 
