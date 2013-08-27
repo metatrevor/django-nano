@@ -3,7 +3,7 @@
 from distutils.core import setup
 from setuptools import find_packages
 
-README_FILE = open('README.txt')
+README_FILE = open('README.rst')
 try:
     long_description = README_FILE.read()
 finally:
@@ -36,7 +36,7 @@ packages=(
 )
 
 setup(name='nano',
-        version='0.5',
+        version='0.6',
         packages=find_packages(exclude=exclude),
         include_package_data=True,
         zip_safe=False,

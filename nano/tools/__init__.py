@@ -12,7 +12,6 @@ from django.template import RequestContext, loader, Context
 from django.db.models import get_model
 
 def nullfunction(return_this=None, *args, **kwargs):
-    "Do-nothing dummy-function"
     return return_this
 
 def pop_error(request):
@@ -22,6 +21,8 @@ def pop_error(request):
     return error
 
 def asciify(string):
+    """Convert unicode string to ascii, normalizing with NFKD"""
+
     string = unicodedata.normalize('NFKD', string)
     return string.encode('ascii', 'ignore')
 
@@ -33,21 +34,27 @@ def grouper(n, iterable, fillvalue=None):
     args = [iter(iterable)] * n
     return izip_longest(fillvalue=fillvalue, *args)
 
-def get_profile_model():
+def get_profile_model(raise_on_error=True):
     if not getattr(settings, 'AUTH_PROFILE_MODULE', False):
         error = "AUTH_PROFILE_MODULE isn't set in the settings, couldn't fetch profile"
         _LOG.error(error)
-        raise SiteProfileNotAvailable, error
+        if raise_on_error:
+            raise SiteProfileNotAvailable, error
+        return None
     try:
         app_label, model_name = settings.AUTH_PROFILE_MODULE.split('.')
         model = get_model(app_label, model_name)
     except ImportError:
         error = "Could not import the profile '%s' given in AUTH_PROFILE_MODULE" % settings.AUTH_PROFILE_MODULE
         _LOG.error(error)
-        raise SiteProfileNotAvailable, error
+        if raise_on_error:
+            raise SiteProfileNotAvailable, error
+        return None
     except ImproperlyConfigured:
         error = "An unknown error happened while fetching the profile model"
-        raise SiteProfileNotAvailable, error
+        if raise_on_error:
+            raise SiteProfileNotAvailable, error
+        return None
     return model
 
 def get_user_model():

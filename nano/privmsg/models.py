@@ -7,12 +7,17 @@ from django.contrib.auth.models import User
 from nano.tools.models import AbstractText
 
 class PMManager(models.Manager):
+
     def sent(self, user):
+        """Limit to PMs sent by <user>"""
+
         return self.get_query_set().filter(
                 sender=user, 
                 sender_deleted=False)
 
     def archived(self, user):
+        """Limit to PMs received and archived by <user>"""
+
         return self.get_query_set().filter(
                 recipient=user,
                 recipient_deleted=False,
@@ -20,6 +25,8 @@ class PMManager(models.Manager):
                 )
 
     def received(self, user):
+        """Limit to PMs received by <user>"""
+
         return self.get_query_set().filter(
                 recipient=user,
                 recipient_archived=False, 

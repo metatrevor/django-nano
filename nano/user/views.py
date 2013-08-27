@@ -16,7 +16,7 @@ from nano.tools import pop_error, render_page, get_profile_model, asciify
 from nano.user.forms import *
 from nano.user import new_user_created
 
-Profile = get_profile_model()
+Profile = get_profile_model(raise_on_error=False)
 
 class NanoUserError(Exception):
     pass

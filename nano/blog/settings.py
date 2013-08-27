@@ -27,4 +27,4 @@ else:
 if not getattr(settings, 'NANO_BLOG_USE_TAGS', False):
     NANO_BLOG_TAGS = False
 
-SPECIAL_TAGS = getattr(settings, 'NANO_BLOG_SPECIAL_TAGS', ('pinned',))
+NANO_BLOG_SPECIAL_TAGS = getattr(settings, 'NANO_BLOG_SPECIAL_TAGS', ('pinned',))

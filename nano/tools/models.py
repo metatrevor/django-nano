@@ -14,6 +14,7 @@ from django.utils.translation import ugettext_lazy as _
 
 class UnorderedTreeManager(models.Manager):
     def roots(self):
+        "Return a list of tree roots, nodes having no parents"
         return self.get_query_set().filter(part_of__isnull=True)
 
 class UnorderedTreeMixin(models.Model):
@@ -44,40 +45,47 @@ class UnorderedTreeMixin(models.Model):
 
     @property
     def level(self):
+        "Count how far down in the tree self is"
         return unicode(self.path).count(self._sep)
 
     def roots(self):
+        "Get all roots, nodes without parents"
         return self._default_manager.filter(part_of__isnull=True)
 
     def get_path(self):
+        "Get all ancestors, ordered from root to self"
         return [self._default_manager.get(id=p) for p in unicode(self.path).split(self._sep) if p]
 
     def descendants(self):
+        "Get all descendants in no particular order"
         return self._default_manager.filter(path__startswith=self.path).exclude(id=self.id)
 
     def parent(self):
+        "Get parent of self"
         return self.part_of
 
     def siblings(self):
+        "Get all nodes with the same parent"
         return [p for p in self.part_of.descendants() if p.level == self.level]
 
     def children(self):
+        "Get nodes that have self as parent"
         return [p for p in self.descendants() if p.level == self.level + 1]
 
     def is_sibling_of(self, node):
+        "Check if <node> has the same parent as self"
         return self.part_of == node.part_of
 
     def is_child_of(self, node):
+        "Check if <node> is the parent of self"
         return self.part_of == node
 
     def is_root(self):
-        """Roots have no parents"""
-
+        """Check if self is a root. Roots have no parents"""
         return bool(self.part_of)
 
     def is_leaf(self):
-        """Leaves have no descendants"""
-
+        """Check if self is a leaf. Leaves have no descendants"""
         return self.descendants().count() == 0
 
 class AbstractText(models.Model):
