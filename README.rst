@@ -54,21 +54,21 @@ Common for all apps
 Append ``nano.<subapp>`` to your INSTALLED_APPS, where ``subapp``
 is any of the tools listed above except ``tools``.
 
-chunk
-+++++
+blog
+++++
 
-Add 'nano.chunk.loader.Loader' to TEMPLATE_LOADERS.
-
-comments
-++++++++
-
-Comments can be tagged using ``django-taggit`` or ``django-tagging``
+Blog entries can be tagged using ``django-taggit`` or ``django-tagging``
 if either of those is in INSTALLED_APPS *and* NANO_BLOG_USE_TAGS
 is set to True in settings. It will prefer ``django-taggit``. It
 is also possible to convert from ``django-tagging`` to
 ``django-taggit`` using the management command
 ``migrate_tagging_to_taggit``. This will convert *all* tags, not
-just those for comments.
+just those for blog entries.
+
+chunk
++++++
+
+Add 'nano.chunk.loader.Loader' to TEMPLATE_LOADERS.
 
 user
 ++++
