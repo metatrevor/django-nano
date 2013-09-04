@@ -41,6 +41,7 @@ def random_password():
 def make_user(username, password, email=None, request=None):
     try:
         user = User.objects.get(username=username)
+        return user, False
     except User.DoesNotExist:
         # make user
         user = User(username=username[:30])
@@ -62,7 +63,7 @@ def make_user(username, password, email=None, request=None):
             new_user_created.send(sender=User, user=user) 
         if request is not None:
             messages.info(request, u"You're now registered, as '%s'" % username)
-        return user
+        return user, True
     else:
         raise NanoUserExistsError, "The username '%s' is already in use by somebody else" % username
 
@@ -90,17 +91,18 @@ def signup(request, template_name='signup.html', *args, **kwargs):
                 username = safe_username
 
             # make user
-            user = make_user(username, password, email=email, request=request)
+            user, created = make_user(username, password, email=email, request=request)
             user = auth.authenticate(username=username, password=password)
-            auth.login(request, user)
-            request.session['error'] = None
-            next = getattr(settings, 'NANO_USER_SIGNUP_NEXT', reverse('nano_user_signup_done'))
-            try:
-                next_profile = user.get_profile().get_absolute_url()
-                return HttpResponseRedirect(next_profile)
-            except Profile.DoesNotExist:
-                pass
-            return HttpResponseRedirect(next)
+            if user.is_authenticated():
+                auth.login(request, user)
+                request.session['error'] = None
+                next = getattr(settings, 'NANO_USER_SIGNUP_NEXT', reverse('nano_user_signup_done'))
+                try:
+                    next_profile = user.get_profile().get_absolute_url()
+                    return HttpResponseRedirect(next_profile)
+                except Profile.DoesNotExist:
+                    pass
+                return HttpResponseRedirect(next)
     return render_page(request, template_name, data)
 
 @login_required
