@@ -3,7 +3,8 @@ from random import choice, sample
 import string
 
 from django.conf import settings
-from django.contrib import auth, messages
+from django.contrib import messages
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
@@ -13,8 +14,12 @@ from django.shortcuts import get_object_or_404
 from django.template.defaultfilters import slugify
 
 from nano.tools import pop_error, render_page, get_profile_model, asciify
-from nano.user.forms import *
+from nano.user.forms import SignupForm, PasswordChangeForm, PasswordResetForm
 from nano.user import new_user_created
+
+
+import logging
+_LOG = logging.getLogger(__name__)
 
 Profile = get_profile_model(raise_on_error=False)
 
@@ -40,8 +45,7 @@ def random_password():
 
 def make_user(username, password, email=None, request=None):
     try:
-        user = User.objects.get(username=username)
-        return user, False
+        User.objects.get(username=username)
     except User.DoesNotExist:
         # make user
         user = User(username=username[:30])
@@ -52,9 +56,13 @@ def make_user(username, password, email=None, request=None):
         if email:
             user.email = email
         user.save()
+        
+        # Create profile
         if Profile:
             profile = Profile(user=user, display_name=username)
             profile.save()
+
+        # Don't signal creation of test users
         test_users = getattr(settings, 'NANO_USER_TEST_USERS', ())
         for test_user in test_users:
             if user.username.startswith(test_user):
@@ -62,8 +70,10 @@ def make_user(username, password, email=None, request=None):
         else:
             new_user_created.send(sender=User, user=user) 
         if request is not None:
-            messages.info(request, u"You're now registered, as '%s'" % username)
-        return user, True
+            infomsg = u"You're now registered, as '%s'" % username
+            messages.info(request, infomsg)
+            _LOG.debug('Created user: %s/%s' % (user, user.check_password(password)))
+        return user
     else:
         raise NanoUserExistsError, "The username '%s' is already in use by somebody else" % username
 
@@ -82,27 +92,37 @@ def signup(request, template_name='signup.html', *args, **kwargs):
             password = form.cleaned_data['password2']
             email = form.cleaned_data['email'].strip() or ''
 
+            errormsg = u'Username "%s" is taken'
+
             # check that username not taken
             userslug = slugify(username)
             if Profile.objects.filter(slug=userslug).count():
                 # error!
                 safe_username = slugify('%s-%s' % (username, str(datetime.now())))
-                request.session['error'] = u"Username '%s' already taken, changed it to '%s'." % (username, safe_username)
+                changed_warningmsg = errormsg + ", changed it to '%s'."
+                messages.warning(request, changed_warningmsg % (username, safe_username))
                 username = safe_username
 
             # make user
-            user, created = make_user(username, password, email=email, request=request)
-            user = auth.authenticate(username=username, password=password)
-            if user.is_authenticated():
-                auth.login(request, user)
-                request.session['error'] = None
-                next = getattr(settings, 'NANO_USER_SIGNUP_NEXT', reverse('nano_user_signup_done'))
+            try:
+                user = make_user(username, password, email=email, request=request)
+            except NanoUserExistsError:
+                next_profile = user.get_profile().get_absolute_url()
+                return HttpResponseRedirect(next_profile)
+            else:
+                # fake authentication, avoid a db-lookup/thread-trouble/
+                # race conditions
+                user.backend = 'django.contrib.auth.backends.ModelBackend'
+                _LOG.debug('Attempting login of: %s' % user)
+                login(request, user)
+                nexthop = getattr(settings, 'NANO_USER_SIGNUP_NEXT', reverse('nano_user_signup_done'))
                 try:
-                    next_profile = user.get_profile().get_absolute_url()
-                    return HttpResponseRedirect(next_profile)
+                    nexthop_profile = user.get_profile().get_absolute_url()
+                    return HttpResponseRedirect(nexthop_profile)
                 except Profile.DoesNotExist:
                     pass
-                return HttpResponseRedirect(next)
+                return HttpResponseRedirect(nexthop)
+            _LOG.debug('Should never end up here')
     return render_page(request, template_name, data)
 
 @login_required
