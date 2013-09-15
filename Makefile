@@ -1,6 +1,6 @@
 
 clean:
-	-find . -name '*.pyc' -exec rmdir {} \;
+	-find . -name '*.pyc' -exec rm -rf {} \;
 	-find . -type d -empty -exec rmdir {} \;
 	-rm -rf build
 	-rm -rf dist
