@@ -10,10 +10,10 @@ from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.template.defaultfilters import slugify
 
-from nano.tools import pop_error, render_page, get_profile_model, asciify
+from nano.tools import pop_error, get_profile_model, asciify
 from nano.user.forms import SignupForm, PasswordChangeForm, PasswordResetForm
 from nano.user import new_user_created
 
@@ -123,7 +123,7 @@ def signup(request, template_name='signup.html', *args, **kwargs):
                     pass
                 return HttpResponseRedirect(nexthop)
             _LOG.debug('Should never end up here')
-    return render_page(request, template_name, data)
+    return render(request, template_name, data)
 
 @login_required
 def password_change(request, *args, **kwargs):
@@ -142,7 +142,7 @@ def password_change(request, *args, **kwargs):
         form = PasswordChangeForm()
     data = { 'form': form,
             'error': error,}
-    return render_page(request, template_name, data)
+    return render(request, template_name, data)
 
 def password_reset(request, project_name='Nano', *args, **kwargs):
     error = pop_error(request)
@@ -181,5 +181,5 @@ something you'll be able to remember.
     data = {'form': form,
             'help_message': help_message,
             'error':error}
-    return render_page(request, template, data)
+    return render(request, template, data)
 

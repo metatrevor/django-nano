@@ -1,13 +1,13 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import Http404, HttpResponseRedirect
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.core.urlresolvers import reverse
 
 import logging
 _LOG = logging.getLogger(__name__)
 
-from nano.tools import pop_error, render_page
+from nano.tools import pop_error
 from nano.privmsg.models import PM
 from nano.privmsg.forms import *
 
@@ -74,7 +74,7 @@ def show_pm_archived(request, *args, **kwargs):
     template = 'privmsg/list_archived.html'
     data = {'pms': messages,
             }
-    return render_page(request, template, data)
+    return render(request, template, data)
 
 @login_required
 def show_pm_sent(request, *args, **kwargs):
@@ -85,7 +85,7 @@ def show_pm_sent(request, *args, **kwargs):
     template = 'privmsg/list_sent.html'
     data = {'pms': messages,
             }
-    return render_page(request, template, data)
+    return render(request, template, data)
 
 @login_required
 def show_pm_received(request, *args, **kwargs):
@@ -96,7 +96,7 @@ def show_pm_received(request, *args, **kwargs):
     template = 'privmsg/list_received.html'
     data = {'pms': messages,
             }
-    return render_page(request, template, data)
+    return render(request, template, data)
 
 @login_required
 def show_pms(request, *args, **kwargs):
@@ -123,7 +123,7 @@ def show_pms(request, *args, **kwargs):
     data = {'pms': messages,
             'action': actionstr,
             }
-    return render_page(request, template, data)
+    return render(request, template, data)
 
 @login_required
 def add_pm(request, template='privmsg/add.html', *args, **kwargs):
@@ -148,4 +148,4 @@ def add_pm(request, template='privmsg/add.html', *args, **kwargs):
             'recipient': recipient,
             }
 
-    return render_page(request, template, data)
+    return render(request, template, data)

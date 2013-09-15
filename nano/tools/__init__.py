@@ -7,7 +7,7 @@ _LOG = logging.getLogger(__name__)
 from django.conf import settings
 from django.contrib.auth.models import SiteProfileNotAvailable
 from django.core.exceptions import ImproperlyConfigured
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.template import RequestContext, loader, Context
 from django.db.models import get_model
 
@@ -27,7 +27,7 @@ def asciify(string):
     return string.encode('ascii', 'ignore')
 
 def render_page(request, *args, **kwargs):
-    return render_to_response(context_instance=RequestContext(request), *args, **kwargs)
+    return render(request, *args, **kwargs)
 
 def grouper(n, iterable, fillvalue=None):
     "grouper(3, 'ABCDEFG', 'x') --> ABC DEF Gxx"
