@@ -11,10 +11,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.core.urlresolvers import resolve
-from django.views.generic.list_detail import object_list
+from django.views.generic import ListView
 from django.utils.html import escape
-
-from nano.tools import render_page
 
 from nano.comments.models import Comment
 from nano.comments.forms import *
@@ -105,16 +103,20 @@ def post_comment(request, object_arg='object_id', object_field=None, model=None,
         form = CommentForm(initial=good_data)
         data['commentform'] = form
 
-    return render_page(request, template_name, data)
+    return render(request, template_name, data)
 
-def list_comments(request, object_arg='object_id', object_field=None, model=None, template_name='nano/comments/comment_list.html', *args, **kwargs):
-    object_id = kwargs.get(object_arg, None)
-    assert object_id
-    assert model
-    object = _get_object(model, object_id, object_field)
-    if not object_arg in ('object_id',): 
-        del kwargs[object_arg]
-    
-    queryset = _get_queryset(object_id=object.id, model=model)
-    return object_list(request, queryset=queryset,
-            template_name=template_name, **kwargs)
+
+class ListCommentView(ListView):
+    template_name = 'nano/comments/comment_list.html'
+
+    def get_queryset(self):
+        object_arg = self.kwargs.get('object_arg', 'object_id')
+        object_id = self.kwargs.get(object_arg)
+        model = self.kwargs.get('model')
+        object_field = self.kwargs.get('object_field', None)
+        object = _get_object(model, object_id, object_field)
+        queryset = _get_queryset(object_id=object.id, model=model)
+        if not object_arg in ('object_id',):
+            self.kwargs.pop(object_arg, None)
+        return queryset
+list_comments = ListCommentView.as_view()
