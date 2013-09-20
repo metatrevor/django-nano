@@ -10,15 +10,6 @@ finally:
     README_FILE.close()
 
 exclude = [
-        'nano.link',
-        'nano.menu',
-        'nano.menu.templatetags',
-        'nano.timeline',
-        'nano.tracker',
-        'nano.uri',
-        'nano.web20',
-        'nano.web20.templatetags',
-        'nano.yubiauth',
 ]
 
 packages=(
@@ -26,9 +17,11 @@ packages=(
         'nano.activation', 
         'nano.badge', 
         'nano.blog',
-        'nano.comments',
         'nano.chunk',
+        'nano.comments',
+        'nano.countries',
         'nano.faq',
+        'nano.link',
         'nano.mark',
         'nano.privmsg',
         'nano.tools',
@@ -36,7 +29,7 @@ packages=(
 )
 
 setup(name='nano',
-        version='0.6',
+        version='0.7',
         packages=find_packages(exclude=exclude),
         include_package_data=True,
         zip_safe=False,
