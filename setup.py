@@ -38,7 +38,7 @@ setup(name='nano',
         author_email='kaleissin@gmail.com',
         author='kaleissin',
         long_description=long_description,
-        url='http://code.google.com/p/django-nano/',
+        url='https://github.com/kaleissin/django-nano',
         classifiers=[
                 'Development Status :: 4 - Beta',
                 'Environment :: Web Environment',
