@@ -1,8 +1,7 @@
-import datetime
-
 import django.dispatch
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.timezone import now as tznow
 
 from nano.activation.signals import key_activated
 
@@ -17,7 +16,7 @@ class ActivationKeyError(ActivationError):
 def activate(keystring, user):
     """Activates a specific key for user, returns True on activation,
     raises an exception otherwise"""
-    now = datetime.datetime.now()
+    now = tznow()
     try:
         key = Key.objects.get(key=keystring)
     except Key.DoesNotExist:
@@ -34,15 +33,15 @@ def activate(keystring, user):
 class KeyManager(models.Manager):
 
     def expired(self):
-        now = datetime.datetime.now()
+        now = tznow()
         return self.get_query_set().exclude(expires=None).filter(expires__lte=now)
 
     def available(self):
-        now = datetime.datetime.now()
+        now = tznow()
         return self.get_query_set().filter(Q(expires__gt=now)|Q(expires=None)).filter(activated=None)
 
     def activated(self):
-        now = datetime.datetime.now()
+        now = tznow()
         return self.get_query_set().exclude(activated=None)
 
     def activate(self, *args):

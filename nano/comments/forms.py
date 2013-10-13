@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from django import forms
 from django.utils.translation import ungettext, ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType

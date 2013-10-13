@@ -1,6 +1,5 @@
 # -*- coding: UTF-8 -*-
-from datetime import datetime
-
+from django.utils.timezone import now as tznow
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -35,7 +34,7 @@ class PMManager(models.Manager):
 
 class PM(AbstractText):
     subject = models.CharField(max_length=64, blank=True, default='')
-    sent = models.DateTimeField(default=datetime.now, editable=False)
+    sent = models.DateTimeField(default=tznow, editable=False)
     sender = models.ForeignKey(User, related_name='pms_sent')
     sender_deleted = models.BooleanField(default=False)
     recipient = models.ForeignKey(User, related_name='pms_received')

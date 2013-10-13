@@ -1,6 +1,3 @@
-from copy import deepcopy
-import datetime
-
 from django.conf.urls.defaults import *
 
 urlpatterns = patterns('nano.blog.views',

@@ -1,5 +1,4 @@
-from datetime import datetime
-
+from django.utils.timezone import now as tznow
 from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
@@ -13,7 +12,7 @@ class Comment(GenericForeignKeyAbstractModel, UnorderedTreeMixin):
             blank=True, null=True, related_name="%(class)s_comments") 
     comment = models.TextField(max_length=COMMENT_MAX_LENGTH)
     comment_xhtml = models.TextField(editable=False)
-    added = models.DateTimeField(default=datetime.utcnow)
+    added = models.DateTimeField(default=tznow)
     is_visible = models.BooleanField(default=True)
     is_scrambled = models.BooleanField(default=False)
 

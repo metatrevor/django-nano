@@ -1,7 +1,7 @@
-from datetime import datetime
 from random import choice, sample
 import string
 
+from django.utils.timezone import now as tznow
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
@@ -98,7 +98,7 @@ def signup(request, template_name='signup.html', *args, **kwargs):
             userslug = slugify(username)
             if Profile.objects.filter(slug=userslug).count():
                 # error!
-                safe_username = slugify('%s-%s' % (username, str(datetime.now())))
+                safe_username = slugify('%s-%s' % (username, str(tznow())))
                 changed_warningmsg = errormsg + ", changed it to '%s'."
                 messages.warning(request, changed_warningmsg % (username, safe_username))
                 username = safe_username

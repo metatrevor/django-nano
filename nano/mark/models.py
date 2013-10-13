@@ -1,6 +1,4 @@
-
-from datetime import datetime
-
+from django.utils.timezone import now as tznow
 from django.template.defaultfilters import slugify
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import User
@@ -58,7 +56,7 @@ class MarkType(models.Model):
 
 class Mark(GenericForeignKeyAbstractModel):
     marked_by = models.ForeignKey(User, verbose_name=_('user'), related_name="marks") 
-    marked_at = models.DateTimeField(_('date/time marked'), default=datetime.now)
+    marked_at = models.DateTimeField(_('date/time marked'), default=tznow)
     marktype = models.ForeignKey(MarkType)
     comment = models.CharField(max_length=256, blank=True, null=True)
     
@@ -77,6 +75,6 @@ class Mark(GenericForeignKeyAbstractModel):
 
     def save(self, parent=None, *args, **kwargs):
         if self.marked_at is None:
-            self.marked_at = datetime.now()
+            self.marked_at = tznow()
         super(Mark, self).save(*args, **kwargs)
 
