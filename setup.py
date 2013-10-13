@@ -29,7 +29,7 @@ packages=(
 )
 
 setup(name='nano',
-        version='0.7.1',
+        version='0.7.2',
         packages=find_packages(exclude=exclude),
         include_package_data=True,
         zip_safe=False,
