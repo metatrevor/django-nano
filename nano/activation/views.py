@@ -28,7 +28,7 @@ def activate_key(request, template_name='nano/activation/activation_form.html', 
             key = form.cleaned_data['key'].lower()
             try:
                 result = Key.objects.activate(key, request.user)
-            except ActivationKeyError, msg:
+            except ActivationKeyError as msg:
                 messages.error(request, msg, fail_silently=True)
                 _LOG.error(msg)
                 raise Http404

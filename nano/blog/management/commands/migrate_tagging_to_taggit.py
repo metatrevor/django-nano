@@ -3,7 +3,7 @@ from django.core.management.base import NoArgsCommand
 try:
     import tagging
     import taggit
-except ImportError, e:
+except ImportError as e:
 
     class Command(NoArgsCommand):
         def handle_noargs(self, **kwargs):
