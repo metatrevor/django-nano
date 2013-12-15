@@ -64,6 +64,7 @@ class UnorderedTreeMixin(models.Model):
 
     def siblings(self):
         "Get all nodes with the same parent"
+        if not self.part_of: return []
         return [p for p in self.part_of.descendants() if p.level == self.level]
 
     def children(self):
@@ -80,7 +81,7 @@ class UnorderedTreeMixin(models.Model):
 
     def is_root(self):
         """Check if self is a root. Roots have no parents"""
-        return bool(self.part_of)
+        return not bool(self.part_of)
 
     def is_leaf(self):
         """Check if self is a leaf. Leaves have no descendants"""
