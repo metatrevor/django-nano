@@ -39,7 +39,7 @@ def get_profile_model(raise_on_error=True):
         error = "AUTH_PROFILE_MODULE isn't set in the settings, couldn't fetch profile"
         _LOG.error(error)
         if raise_on_error:
-            raise SiteProfileNotAvailable, error
+            raise SiteProfileNotAvailable(error)
         return None
     try:
         app_label, model_name = settings.AUTH_PROFILE_MODULE.split('.')
@@ -48,12 +48,12 @@ def get_profile_model(raise_on_error=True):
         error = "Could not import the profile '%s' given in AUTH_PROFILE_MODULE" % settings.AUTH_PROFILE_MODULE
         _LOG.error(error)
         if raise_on_error:
-            raise SiteProfileNotAvailable, error
+            raise SiteProfileNotAvailable(error)
         return None
     except ImproperlyConfigured:
         error = "An unknown error happened while fetching the profile model"
         if raise_on_error:
-            raise SiteProfileNotAvailable, error
+            raise SiteProfileNotAvailable(error)
         return None
     return model
 

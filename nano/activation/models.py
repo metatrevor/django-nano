@@ -20,11 +20,11 @@ def activate(keystring, user):
     try:
         key = Key.objects.get(key=keystring)
     except Key.DoesNotExist:
-        raise ActivationKeyError, 'Key %s does not exist, typo?' % keystring
+        raise ActivationKeyError('Key %s does not exist, typo?' % keystring)
     if key.expires and key.expires <= now:
-        raise ActivationKeyError, 'Key expired on %s' % key.expires
+        raise ActivationKeyError('Key expired on %s' % key.expires)
     if key.activated:
-        raise ActivationKeyError, 'Key has already been activated'
+        raise ActivationKeyError('Key has already been activated')
     key.activated_by = user
     key.activated = now
     key.save()

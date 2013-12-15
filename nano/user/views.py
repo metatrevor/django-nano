@@ -75,7 +75,7 @@ def make_user(username, password, email=None, request=None):
             _LOG.debug('Created user: %s/%s' % (user, user.check_password(password)))
         return user
     else:
-        raise NanoUserExistsError, "The username '%s' is already in use by somebody else" % username
+        raise NanoUserExistsError("The username '%s' is already in use by somebody else" % username)
 
 def signup(request, template_name='signup.html', *args, **kwargs):
     me = 'people'
