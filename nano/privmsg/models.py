@@ -52,7 +52,7 @@ class PM(AbstractText):
         if self.subject:
             return self.subject
         else:
-            return self.content[:64]
+            return self.text[:64]
 
     def save(self, *args, **kwargs):
         if not self.subject:
