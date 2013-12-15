@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import *
 
 urlpatterns = patterns('nano.badge.views',
         url(r'^$',                        'list_badges', {}, 'badge-list'),

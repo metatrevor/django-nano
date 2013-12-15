@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import *
 
 urlpatterns = patterns('nano.privmsg.views',
     url(r'^add$',          'add_pm', name='add_pm'),

@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import *
 
 urlpatterns = patterns('nano.blog.views',
         (r'^(?P<year>\d{4})/(?P<month>[01]\d)/(?P<day>[0123]\d)/$', 'list_entries_by_date'),

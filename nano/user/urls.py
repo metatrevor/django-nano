@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import *
 
 signup_done_data = { 'template_name': 'nano/user/signup_done.html' }
 
