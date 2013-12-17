@@ -4,6 +4,7 @@ from urlparse import urlparse
 import logging
 _LOG = logging.getLogger(__name__)
 
+from django.shortcuts import render
 from django.http import HttpResponseRedirect, Http404
 from django.template import loader, RequestContext
 from django.contrib.contenttypes.models import ContentType
