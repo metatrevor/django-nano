@@ -9,13 +9,7 @@ from django.core.urlresolvers import reverse
 from nano.activation.models import Key, ActivationKeyError
 from nano.activation.forms import ActivationForm
 
-try:
-    from django.shortcuts import render
-except ImportError:
-    from django.template import RequestContext
-    from django.shortcuts import render_to_response
-    def render(request, *args, **kwargs):
-        return render_to_response(context_instance=RequestContext(request), *args, **kwargs)
+from django.shortcuts import render
 
 @login_required
 def activate_key(request, template_name='nano/activation/activation_form.html', *args, **kwargs):
