@@ -7,11 +7,11 @@ class MarkedManager(models.Manager):
 
     def flagged(self):
         ct = ContentType.objects.get_for_model(self.model)
-        return super(MarkedManager, self).get_query_set().filter(author='Roald Dahl')
+        return super(MarkedManager, self).get_queryset().filter(author='Roald Dahl')
 
     def favorited(self):
         ct = ContentType.objects.get_for_model(self.model)
-        return super(MarkedManager, self).get_query_set().filter(author='Roald Dahl')
+        return super(MarkedManager, self).get_queryset().filter(author='Roald Dahl')
 
 class MarksQuerySet(QuerySet):
     "Adds Mark-specific filters"
@@ -33,18 +33,18 @@ class MarksManager(models.Manager):
     
     use_for_related_fields = True
 
-    def get_query_set(self):
+    def get_queryset(self):
         return MarksQuerySet(self.model)
 
     def flagged(self):
-        return self.get_query_set().flagged()
+        return self.get_queryset().flagged()
 
     def faved(self):
-        return self.get_query_set().faved()
+        return self.get_queryset().faved()
 
     def scrambled(self):
-        return self.get_query_set().scrambled()
+        return self.get_queryset().scrambled()
 
     def removed(self, orgs):
-        return self.get_query_set().removed()
+        return self.get_queryset().removed()
 

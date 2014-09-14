@@ -10,14 +10,14 @@ class PMManager(models.Manager):
     def sent(self, user):
         """Limit to PMs sent by <user>"""
 
-        return self.get_query_set().filter(
+        return self.get_queryset().filter(
                 sender=user, 
                 sender_deleted=False)
 
     def archived(self, user):
         """Limit to PMs received and archived by <user>"""
 
-        return self.get_query_set().filter(
+        return self.get_queryset().filter(
                 recipient=user,
                 recipient_deleted=False,
                 recipient_archived=True
@@ -26,7 +26,7 @@ class PMManager(models.Manager):
     def received(self, user):
         """Limit to PMs received by <user>"""
 
-        return self.get_query_set().filter(
+        return self.get_queryset().filter(
                 recipient=user,
                 recipient_archived=False, 
                 recipient_deleted=False

@@ -34,15 +34,15 @@ class KeyManager(models.Manager):
 
     def expired(self):
         now = tznow()
-        return self.get_query_set().exclude(expires=None).filter(expires__lte=now)
+        return self.get_queryset().exclude(expires=None).filter(expires__lte=now)
 
     def available(self):
         now = tznow()
-        return self.get_query_set().filter(Q(expires__gt=now)|Q(expires=None)).filter(activated=None)
+        return self.get_queryset().filter(Q(expires__gt=now)|Q(expires=None)).filter(activated=None)
 
     def activated(self):
         now = tznow()
-        return self.get_query_set().exclude(activated=None)
+        return self.get_queryset().exclude(activated=None)
 
     def activate(self, *args):
         return activate(*args)

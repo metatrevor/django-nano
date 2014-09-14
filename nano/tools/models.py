@@ -13,7 +13,7 @@ from django.utils.translation import ugettext_lazy as _
 class UnorderedTreeManager(models.Manager):
     def roots(self):
         "Return a list of tree roots, nodes having no parents"
-        return self.get_query_set().filter(part_of__isnull=True)
+        return self.get_queryset().filter(part_of__isnull=True)
 
 class UnorderedTreeMixin(models.Model):
     part_of = models.ForeignKey('self', blank=True, null=True, default=None, related_name='has_%(class)s_children')
