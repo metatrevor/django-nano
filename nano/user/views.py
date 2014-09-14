@@ -21,8 +21,6 @@ from nano.user import new_user_created
 import logging
 _LOG = logging.getLogger(__name__)
 
-Profile = get_profile_model(raise_on_error=False)
-
 class NanoUserError(Exception):
     pass
 
@@ -58,6 +56,7 @@ def make_user(username, password, email=None, request=None):
         user.save()
         
         # Create profile
+        Profile = get_profile_model(raise_on_error=False)
         if Profile:
             profile = Profile(user=user, display_name=username)
             profile.save()
@@ -96,6 +95,7 @@ def signup(request, template_name='signup.html', *args, **kwargs):
 
             # check that username not taken
             userslug = slugify(username)
+            Profile = get_profile_model(raise_on_error=False)
             if Profile.objects.filter(slug=userslug).count():
                 # error!
                 safe_username = slugify('%s-%s' % (username, str(tznow())))
@@ -107,7 +107,7 @@ def signup(request, template_name='signup.html', *args, **kwargs):
             try:
                 user = make_user(username, password, email=email, request=request)
             except NanoUserExistsError:
-                next_profile = user.get_profile().get_absolute_url()
+                next_profile = Profile.objects.get(user=user).get_absolute_url()
                 return HttpResponseRedirect(next_profile)
             else:
                 # fake authentication, avoid a db-lookup/thread-trouble/
@@ -117,7 +117,7 @@ def signup(request, template_name='signup.html', *args, **kwargs):
                 login(request, user)
                 nexthop = getattr(settings, 'NANO_USER_SIGNUP_NEXT', reverse('nano_user_signup_done'))
                 try:
-                    nexthop_profile = user.get_profile().get_absolute_url()
+                    nexthop_profile = Profile.objects.get(user=user).get_absolute_url()
                     return HttpResponseRedirect(nexthop_profile)
                 except Profile.DoesNotExist:
                     pass

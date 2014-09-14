@@ -5,11 +5,13 @@ from itertools import izip_longest
 _LOG = logging.getLogger(__name__)
 
 from django.conf import settings
-from django.contrib.auth.models import SiteProfileNotAvailable
 from django.core.exceptions import ImproperlyConfigured
 from django.shortcuts import render
 from django.template import RequestContext, loader, Context
 from django.db.models import get_model
+
+class SiteProfileNotAvailable(Exception):
+    pass
 
 def nullfunction(return_this=None, *args, **kwargs):
     return return_this
