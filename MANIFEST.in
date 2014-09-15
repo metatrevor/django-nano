@@ -1,6 +1,7 @@
 include README.rst
 include TODO.txt
 include INSTALL.txt
+include CHANGELOG.rst
 recursive-include nano/activation *
 recursive-include nano/badge *
 recursive-include nano/blog *
