@@ -3,8 +3,12 @@ from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.contrib.auth.views import redirect_to_login
 from django.contrib.auth.decorators import login_required
 from django.template import loader, RequestContext
-from django.utils import simplejson
 from django.contrib.contenttypes.models import ContentType
+
+try:
+    import json as simplejson
+except:
+    from django.utils import simplejson
 
 from nano.mark.models import Mark, MarkType
 
