@@ -1,14 +1,13 @@
 from django.utils.timezone import now as tznow
 from django.conf import settings
 from django.db import models
-from django.contrib.auth.models import User
 
 from nano.tools.models import UnorderedTreeMixin, GenericForeignKeyAbstractModel
 
 COMMENT_MAX_LENGTH = getattr(settings,'COMMENT_MAX_LENGTH',3000)
 
 class Comment(GenericForeignKeyAbstractModel, UnorderedTreeMixin):
-    user = models.ForeignKey(User,
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
             blank=True, null=True, related_name="%(class)s_comments") 
     comment = models.TextField(max_length=COMMENT_MAX_LENGTH)
     comment_xhtml = models.TextField(editable=False)

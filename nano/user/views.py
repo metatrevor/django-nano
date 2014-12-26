@@ -6,7 +6,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
@@ -42,6 +42,7 @@ def random_password():
     return ''.join(outlist)
 
 def make_user(username, password, email=None, request=None):
+    User = get_user_model()
     try:
         User.objects.get(username=username)
     except User.DoesNotExist:
@@ -145,6 +146,7 @@ def password_change(request, *args, **kwargs):
     return render(request, template_name, data)
 
 def password_reset(request, project_name='Nano', *args, **kwargs):
+    User = get_user_model()
     error = pop_error(request)
     template = 'password_reset_form.html'
     e_template = 'password_reset.txt'

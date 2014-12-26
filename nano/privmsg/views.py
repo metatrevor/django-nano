@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.core.urlresolvers import reverse
@@ -13,6 +13,7 @@ from nano.privmsg.forms import *
 
 def get_user(request, **kwargs):
     username = kwargs.get(u'username', None) or request.REQUEST.get(u'username', None)
+    User = get_user_model()
     try:
         return User.objects.get(username=username)
     except User.DoesNotExist:

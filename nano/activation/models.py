@@ -1,6 +1,6 @@
 import django.dispatch
+from django.conf import settings
 from django.db import models
-from django.contrib.auth.models import User
 from django.utils.timezone import now as tznow
 
 from nano.activation.signals import key_activated
@@ -53,7 +53,7 @@ class Key(models.Model):
     pub_date = models.DateTimeField(auto_now_add=True)
     expires = models.DateTimeField(blank=True, null=True)
     activated = models.DateTimeField(blank=True, null=True)
-    activated_by = models.ForeignKey(User, blank=True, null=True, related_name='activation_keys')
+    activated_by = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, related_name='activation_keys')
 
     objects = KeyManager()
 

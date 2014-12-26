@@ -1,7 +1,7 @@
 # -*- coding: UTF-8 -*-
 from django.utils.timezone import now as tznow
 from django.db import models
-from django.contrib.auth.models import User
+from django.conf import settings
 
 from nano.tools.models import AbstractText
 
@@ -35,9 +35,9 @@ class PMManager(models.Manager):
 class PM(AbstractText):
     subject = models.CharField(max_length=64, blank=True, default='')
     sent = models.DateTimeField(default=tznow, editable=False)
-    sender = models.ForeignKey(User, related_name='pms_sent')
+    sender = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='pms_sent')
     sender_deleted = models.BooleanField(default=False)
-    recipient = models.ForeignKey(User, related_name='pms_received')
+    recipient = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='pms_received')
     recipient_archived = models.BooleanField(default=False)
     recipient_deleted = models.BooleanField(default=False)
 

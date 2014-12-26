@@ -1,5 +1,6 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+from django.conf import settings
 
 class DefaultManager(models.Manager):
     pass
@@ -7,9 +8,11 @@ class DefaultManager(models.Manager):
 class BadgeRecipientManager(models.Manager):
 
     def get_all_recipients(self):
+        User = get_user_model()
         return User.objects.filter(badges__isnull=False).distinct()
 
     def get_all_nonrecipients(self):
+        User = get_user_model()
         return User.objects.exclude(badges__isnull=False)
 
 class Badge(models.Model):
@@ -24,7 +27,7 @@ class Badge(models.Model):
     level = models.PositiveIntegerField(default=100)
     name = models.CharField(max_length=20, unique=True)
     description = models.TextField()
-    receivers = models.ManyToManyField(User, blank=True, null=True, related_name='badges')
+    receivers = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, null=True, related_name='badges')
 
     objects = BadgeRecipientManager()
 

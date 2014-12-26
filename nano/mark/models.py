@@ -1,7 +1,7 @@
 from django.utils.timezone import now as tznow
 from django.template.defaultfilters import slugify
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.auth.models import User
+from django.conf import settings
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 #from django.conf import settings
@@ -55,11 +55,11 @@ class MarkType(models.Model):
         super(MarkType, self).save(*args, **kwargs)
 
 class Mark(GenericForeignKeyAbstractModel):
-    marked_by = models.ForeignKey(User, verbose_name=_('user'), related_name="marks") 
+    marked_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('user'), related_name="marks")
     marked_at = models.DateTimeField(_('date/time marked'), default=tznow)
     marktype = models.ForeignKey(MarkType)
     comment = models.CharField(max_length=256, blank=True, null=True)
-    
+
     objects = MarksManager()
 
     class Meta:

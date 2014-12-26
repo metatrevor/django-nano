@@ -9,6 +9,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.shortcuts import render
 from django.template import RequestContext, loader, Context
 from django.db.models import get_model
+from django.contrib.auth import get_user_model
 
 class SiteProfileNotAvailable(Exception):
     pass
@@ -58,10 +59,6 @@ def get_profile_model(raise_on_error=True):
             raise SiteProfileNotAvailable(error)
         return None
     return model
-
-def get_user_model():
-    app_label, model_name = getattr(settings, 'NANO_USER_MODEL', 'auth.User').split('.')
-    return get_model(app_label, model_name)
 
 if 'nano.blog' in settings.INSTALLED_APPS:
     try:
