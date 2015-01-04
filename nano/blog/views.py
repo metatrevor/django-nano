@@ -48,5 +48,6 @@ class TodayBlogView(MonthBlogMixin, MonthArchiveView):
 list_entries_for_today = TodayBlogView.as_view()
 
 class LatestBlogView(BlogDateMixin, ArchiveIndexView):
+    queryset = Entry.objects.all().order_by('-pub_date')[:30]
     context_object_name = 'object_list'
 list_latest_entries = LatestBlogView.as_view()
