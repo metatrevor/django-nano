@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Release 0.9
+-----------
+
+Exchangeable user + bugfixes
+
 Release 0.8
 -----------
 
