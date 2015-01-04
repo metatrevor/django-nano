@@ -17,6 +17,7 @@ class BlogMixin(object):
         context = super(BlogMixin, self).get_context_data(**kwargs)
         context['me'] = 'news'
         context['now_today'] = datetime.date.today()
+        context['latest'] = self.get_queryset()[:30]
         return context
 
 class BlogDateMixin(BlogMixin):
@@ -48,6 +49,5 @@ class TodayBlogView(MonthBlogMixin, MonthArchiveView):
 list_entries_for_today = TodayBlogView.as_view()
 
 class LatestBlogView(BlogDateMixin, ArchiveIndexView):
-    queryset = Entry.objects.all().order_by('-pub_date')[:30]
-    context_object_name = 'object_list'
+    pass
 list_latest_entries = LatestBlogView.as_view()
