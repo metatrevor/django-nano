@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Release 0.9.1
+-------------
+
+A bugfix needed a.. bugfix
+
 Release 0.9
 -----------
 
