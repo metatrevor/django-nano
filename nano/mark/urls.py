@@ -1,7 +1,7 @@
 from django.conf.urls import *
 
-from nano.badge.models import *
+from nano.mark import views
 
-urlpatterns = patterns('nano.mark.views',
-        url(r'^toggle$',                  'toggle_mark', {}, 'toggle_mark'),
+urlpatterns = patterns('',
+    url(r'^toggle$',    views.toggle_mark, name='toggle_mark'),
 )

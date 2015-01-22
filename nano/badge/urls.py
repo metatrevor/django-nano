@@ -1,6 +1,8 @@
 from django.conf.urls import *
 
-urlpatterns = patterns('nano.badge.views',
-        url(r'^$',                        'list_badges', {}, 'badge-list'),
-        url(r'^(?P<pk>[0-9]+)/$',  'show_badge', {}, 'badge-detail'),
+from nano.badge import views
+
+urlpatterns = patterns('',
+    url(r'^$',                 views.list_badges, name='badge-list'),
+    url(r'^(?P<pk>[0-9]+)/$',  views.show_badge, name='badge-detail'),
 )

@@ -1,5 +1,7 @@
 from django.conf.urls import *
 
-urlpatterns = patterns('nano.faq.views',
-        (r'^$',                     'list_faqs'),
+from nano.faq import views
+
+urlpatterns = patterns('',
+    url(r'^$',     views.list_faqs),
 )
