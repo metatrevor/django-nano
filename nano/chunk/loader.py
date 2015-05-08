@@ -22,5 +22,3 @@ class Loader(BaseLoader):
         except Chunk.DoesNotExist:
             error_msg = "Couldn't find a %s-chunk with the name %s" % (chunk_model_name, template_name)
             raise TemplateDoesNotExist(error_msg)
-
-_loader = Loader()
