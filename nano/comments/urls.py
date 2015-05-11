@@ -1,5 +1,10 @@
 from django.conf.urls import *
-from django.views.defaults import shortcut
+try:
+    # Django >= 1.8
+    from django.contrib.contenttypes.views import shortcut
+except ImportError:
+    # Django < 1.8
+    from django.views.defaults import shortcut
 
 from nano.comments.models import *
 
