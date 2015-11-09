@@ -27,7 +27,7 @@ class Badge(models.Model):
     level = models.PositiveIntegerField(default=100)
     name = models.CharField(max_length=20, unique=True)
     description = models.TextField()
-    receivers = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, null=True, related_name='badges')
+    receivers = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, related_name='badges')
 
     objects = BadgeRecipientManager()
 
